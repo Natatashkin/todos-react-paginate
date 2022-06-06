@@ -1,0 +1,15 @@
+.navbar {
+  display: flex;
+  & .link {
+    display: block;
+    padding: 20px 15px;
+    color: #ffffff;
+
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  & .link.active {
+    color: #c26b1a;
+  }
+}
