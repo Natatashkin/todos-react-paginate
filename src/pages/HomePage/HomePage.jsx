@@ -1,6 +1,7 @@
+import PageTitle from '../../components/PageTitle';
 const HomePage = () => (
   <div>
-    <h1>HomePage</h1>
+    <PageTitle title="HomePage" />
   </div>
 );
 

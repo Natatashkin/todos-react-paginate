@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import Container from '../../components/Container';
 import * as todosAPI from '../../services/todosAPI';
+import TodoSection from '../../components/TodoSection';
+import PageTitle from '../../components/PageTitle';
+import TodoAdd from '../../components/TodoAdd';
 import TodoList from '../../components/TodoList';
-import Todo from '../../components/Todo';
 
 const Dashboard = () => {
   const [todos, setTodos] = useState(null);
@@ -20,12 +22,25 @@ const Dashboard = () => {
     getAllTodos();
   }, []);
 
+  const handleDeleteTodo = async id => {
+    try {
+      await todosAPI.deleteTodo(id);
+      const newTodos = todos.filter(({ id: todoId }) => todoId !== id);
+      setTodos(newTodos);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   return (
     <Container>
-      <h1>Dashboard</h1>
-      <TodoList>
-        {todos && todos.map(todo => <Todo key={todo.id} data={todo} />)}
-      </TodoList>
+      <PageTitle title="Dashboard" />
+      <TodoSection title="Control Panel">
+        <TodoAdd />
+      </TodoSection>
+      <TodoSection title="Todo List">
+        <TodoList tasks={todos} deleteTodo={handleDeleteTodo} />
+      </TodoSection>
     </Container>
   );
 };

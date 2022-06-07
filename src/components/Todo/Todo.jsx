@@ -1,17 +1,42 @@
 import './Todo.scss';
+import { useState } from 'react';
+import classNames from 'classnames';
+import IconButton from '../IconButton';
+import { RiDeleteBin6Line, RiEditLine } from 'react-icons/ri';
 
-const Todo = ({ data }) => {
-  const { completed, title } = data;
+const Todo = ({ data, deleteTodo }) => {
+  const { completed, title, id } = data;
+  const [checked, setChecked] = useState(completed);
+
+  const handleChange = e => {
+    const { checked: innerChecked } = e.target;
+    setChecked(innerChecked);
+  };
+
   return (
     <li className="todo">
-      <input type="checkbox" />
-      <p className="tack">{title}</p>
+      <input
+        type="checkbox"
+        onChange={handleChange}
+        checked={checked}
+        name="checkbox"
+      />
+      <p
+        className={classNames([
+          'todo-task',
+          { 'todo-task--completed': checked },
+        ])}
+      >
+        {title}
+      </p>
+      <IconButton icon={<RiEditLine />} type="button" />
+      <IconButton
+        icon={<RiDeleteBin6Line />}
+        onClick={() => deleteTodo(id)}
+        type="button"
+      />
     </li>
   );
 };
 
 export default Todo;
-
-// completed: false
-// id: 1
-// title: "delectus aut autem"
