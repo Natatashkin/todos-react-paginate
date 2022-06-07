@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import Container from '../../components/Container';
-import * as todosAPI from '../../services/todosAPI';
-import TodoSection from '../../components/TodoSection';
-import PageTitle from '../../components/PageTitle';
-import TodoAdd from '../../components/TodoAdd';
+import Container from 'components/Container';
+import * as todosAPI from 'services/todosAPI';
+import TodoSection from 'components/TodoSection';
+import PageTitle from 'components/PageTitle';
+import TodoAdd from 'components/TodoAdd';
 import TodoList from '../../components/TodoList';
 
 const Dashboard = () => {
@@ -39,7 +39,7 @@ const Dashboard = () => {
         <TodoAdd />
       </TodoSection>
       <TodoSection title="Todo List">
-        <TodoList tasks={todos} deleteTodo={handleDeleteTodo} />
+        <TodoList tasks={todos} onDeleteTodo={handleDeleteTodo} />
       </TodoSection>
     </Container>
   );
