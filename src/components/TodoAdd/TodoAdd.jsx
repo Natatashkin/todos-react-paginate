@@ -3,7 +3,8 @@ import { useState } from 'react';
 import IconButton from '../IconButton';
 import { RiPlayListAddLine } from 'react-icons/ri';
 import Modal from '../Modal';
-import AddTodoForm from '../Forms/addTodoForm';
+import TodoForm from '../TodoForm';
+import { Toaster } from 'react-hot-toast';
 
 const TodoAdd = ({ onAddTodo }) => {
   const [openModal, setOpenModal] = useState(false);
@@ -27,7 +28,8 @@ const TodoAdd = ({ onAddTodo }) => {
         onClick={handleAddTodo}
       />
       <Modal open={openModal} onClose={handleCloseModal}>
-        <AddTodoForm onAddTodo={onAddTodo} />
+        <TodoForm onAddTodo={onAddTodo} />
+        <Toaster />
       </Modal>
     </div>
   );

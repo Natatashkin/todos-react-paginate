@@ -1,25 +1,28 @@
 import './Todo.scss';
 import { useState } from 'react';
 import classNames from 'classnames';
+import { Toaster } from 'react-hot-toast';
 import IconButton from '../IconButton';
 import Modal from '../Modal';
-import AddTodoForm from '../Forms/addTodoForm';
+import TodoForm from '../TodoForm';
 import { RiDeleteBin6Line, RiEditLine } from 'react-icons/ri';
 
 const Todo = ({ task, onDeleteTodo, onEditTodo }) => {
   const { completed, title, id } = task;
   const [checked, setChecked] = useState(completed);
-  const [disabled, setDisabled] = useState(false);
+  const [disabledDelete, setDisabledDelete] = useState(false);
+  const [disabledEdit, setDisabledEdit] = useState(completed);
   const [openModal, setOpenModal] = useState(false);
 
   const handleChange = e => {
     const { checked: innerChecked } = e.target;
     setChecked(innerChecked);
+    setDisabledEdit(true);
   };
 
   const handleDelitClick = id => {
     onDeleteTodo(id);
-    setDisabled(true);
+    setDisabledDelete(true);
   };
 
   const handleEditClick = id => {
@@ -36,6 +39,7 @@ const Todo = ({ task, onDeleteTodo, onEditTodo }) => {
     <>
       <li className="todo">
         <input
+          className="todo-checkbox"
           type="checkbox"
           onChange={handleChange}
           checked={checked}
@@ -49,20 +53,24 @@ const Todo = ({ task, onDeleteTodo, onEditTodo }) => {
         >
           {title}
         </p>
-        <IconButton
-          icon={<RiEditLine />}
-          type="button"
-          onClick={handleEditClick}
-        />
-        <IconButton
-          icon={<RiDeleteBin6Line />}
-          onClick={() => handleDelitClick(id)}
-          type="button"
-          disabled={disabled}
-        />
+        <div className="todo-buttons">
+          <IconButton
+            icon={<RiEditLine />}
+            type="button"
+            onClick={handleEditClick}
+            disabled={disabledEdit}
+          />
+          <IconButton
+            icon={<RiDeleteBin6Line />}
+            onClick={() => handleDelitClick(id)}
+            type="button"
+            disabled={disabledDelete}
+          />
+        </div>
       </li>
       <Modal open={openModal} onClose={handleCloseModal}>
-        <AddTodoForm todoId={id} text={title} onEditTodo={onEditTodo} />
+        <TodoForm todoId={id} text={title} onEditTodo={onEditTodo} />
+        <Toaster />
       </Modal>
     </>
   );

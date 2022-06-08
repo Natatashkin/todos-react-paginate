@@ -4,10 +4,12 @@ import * as todosAPI from 'services/todosAPI';
 import TodoSection from 'components/TodoSection';
 import PageTitle from 'components/PageTitle';
 import TodoAdd from 'components/TodoAdd';
-import TodoList from '../../components/TodoList';
+import TodoList from 'components/TodoList';
+import Filter from 'components/Filter';
 
 const Dashboard = () => {
   const [todos, setTodos] = useState(null);
+  const [filter, setFilter] = useState('');
 
   useEffect(() => {
     const getAllTodos = async () => {
@@ -32,7 +34,6 @@ const Dashboard = () => {
   };
 
   const handleAddTodo = async value => {
-    console.log(value);
     const newTask = {
       userId: 1,
       title: value,
@@ -63,6 +64,22 @@ const Dashboard = () => {
     }
   };
 
+  const handleFilterChange = e => {
+    const { value } = e.target;
+    setFilter(value);
+  };
+
+  const handleFilterReset = () => {
+    setFilter('');
+  };
+
+  const filteredTodos = () => {
+    const normalizedFilter = filter.toLocaleLowerCase();
+    return todos?.filter(({ title }) =>
+      title.toLowerCase().includes(normalizedFilter),
+    );
+  };
+
   return (
     <Container>
       <PageTitle title="Dashboard" />
@@ -70,8 +87,13 @@ const Dashboard = () => {
         <TodoAdd onAddTodo={handleAddTodo} />
       </TodoSection>
       <TodoSection title="Todo List">
+        <Filter
+          value={filter}
+          onChange={handleFilterChange}
+          onClick={handleFilterReset}
+        />
         <TodoList
-          tasks={todos}
+          tasks={filteredTodos()}
           onDeleteTodo={handleDeleteTodo}
           onEditTodo={handleEditTodo}
         />

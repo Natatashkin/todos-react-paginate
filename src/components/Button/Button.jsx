@@ -1,12 +1,12 @@
 const Button = ({
   type = 'button',
-  text = 'Button',
+  title = 'Button',
   onClick = () => {},
   ...args
 }) => {
   return (
     <button type={type} onClick={onClick} {...args}>
-      {text}
+      {title}
     </button>
   );
 };

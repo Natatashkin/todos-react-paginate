@@ -1,6 +1,7 @@
 .todo {
   display: flex;
   align-items: center;
+
   width: 80%;
   padding: 15px;
   border-radius: 4px;
@@ -11,11 +12,18 @@
   }
 
   &-task {
-    padding-left: 15px;
+    flex-grow: 1;
     text-align: left;
-    transition: color 0.2s ease-in-out;
+    padding: 0 15px;
+    transition: text-decorationlor 0.2s ease-in-out;
     &--completed {
-      color: red;
+      color: lightgrey;
+      text-decoration: line-through;
     }
+  }
+
+  &-buttons {
+    display: flex;
+    flex-wrap: nowrap;
   }
 }

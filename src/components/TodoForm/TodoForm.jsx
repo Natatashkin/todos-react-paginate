@@ -1,8 +1,9 @@
-import './AddTodoForm.scss';
-import Button from '../../Button';
+import './TodoForm.scss';
+import Button from '../Button';
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 
-const AddTodoForm = ({ onAddTodo, todoId, text = '', onEditTodo }) => {
+const TodoForm = ({ onAddTodo, todoId, text = '', onEditTodo }) => {
   const [taskText, setTaskText] = useState(text);
 
   const handleChange = e => {
@@ -11,8 +12,12 @@ const AddTodoForm = ({ onAddTodo, todoId, text = '', onEditTodo }) => {
   };
   const handleSubmit = e => {
     e.preventDefault();
+    console.log(taskText);
+    if (!taskText) {
+      toast.error('Задание не может быть пустым');
+      return;
+    }
     if (text) {
-      console.log(taskText);
       onEditTodo(todoId, taskText);
       resetForm();
       return;
@@ -26,7 +31,7 @@ const AddTodoForm = ({ onAddTodo, todoId, text = '', onEditTodo }) => {
   };
 
   return (
-    <form action="#" onSubmit={handleSubmit}>
+    <form className="todo-form" onSubmit={handleSubmit}>
       <label htmlFor="task">Write your task:</label>
       <textarea
         name="task"
@@ -41,4 +46,4 @@ const AddTodoForm = ({ onAddTodo, todoId, text = '', onEditTodo }) => {
   );
 };
 
-export default AddTodoForm;
+export default TodoForm;
