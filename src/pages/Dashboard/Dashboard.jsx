@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { generate } from 'shortid';
 import Container from 'components/Container';
 import * as todosAPI from 'services/todosAPI';
 import TodoSection from 'components/TodoSection';
@@ -38,7 +37,6 @@ const Dashboard = () => {
       userId: 1,
       title: value,
       completed: false,
-      id: generate(),
     };
 
     try {
@@ -50,13 +48,16 @@ const Dashboard = () => {
   };
 
   const handleEditTodo = async (todoId, value) => {
-    console.log(todoId, value);
     const updatedTodo = todos.find(({ id }) => todoId === id);
     const newTodo = { ...updatedTodo, title: value };
 
     try {
       const res = await todosAPI.updateTodo(todoId, newTodo);
-      console.log(res);
+      const index = todos.findIndex(todo => todo.id === todoId);
+      const updatedTodos = todos.map((todo, idx) =>
+        idx === index ? res : todo,
+      );
+      setTodos(updatedTodos);
     } catch (error) {
       console.log(error.message);
     }
