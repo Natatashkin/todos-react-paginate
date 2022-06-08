@@ -9,12 +9,16 @@ export const getTodos = async () => {
 
 export const deleteTodo = async id => {
   await axios.delete(`/todos/${id}`);
-  // console.log(response);
 };
 
 export const addTodo = async body => {
   const { data } = await axios.post(`/todos`, {
     ...body,
   });
+  return data;
+};
+
+export const updateTodo = async (id, body) => {
+  const { data } = await axios.put(`/todos/${id}`, { ...body }, { new: true });
   return data;
 };

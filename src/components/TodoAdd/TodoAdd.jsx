@@ -1,10 +1,21 @@
 import './TodoAdd.scss';
+import { useState } from 'react';
 import IconButton from '../IconButton';
 import { RiPlayListAddLine } from 'react-icons/ri';
+import Modal from '../Modal';
+import AddTodoForm from '../Forms/addTodoForm';
 
-const TodoAdd = () => {
-  const handleAddTodo = e => {
-    console.log(e.target);
+const TodoAdd = ({ onAddTodo }) => {
+  const [openModal, setOpenModal] = useState(false);
+
+  const handleAddTodo = () => {
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = e => {
+    if (e.target === e.currentTarget) {
+      setOpenModal(false);
+    }
   };
 
   return (
@@ -15,6 +26,9 @@ const TodoAdd = () => {
         icon={<RiPlayListAddLine />}
         onClick={handleAddTodo}
       />
+      <Modal open={openModal} onClose={handleCloseModal}>
+        <AddTodoForm onAddTodo={onAddTodo} />
+      </Modal>
     </div>
   );
 };

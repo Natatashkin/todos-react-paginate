@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { generate } from 'shortid';
 import Container from 'components/Container';
 import * as todosAPI from 'services/todosAPI';
 import TodoSection from 'components/TodoSection';
@@ -13,8 +14,7 @@ const Dashboard = () => {
     const getAllTodos = async () => {
       try {
         const res = await todosAPI.getTodos();
-        const partOfRes = res.splice(0, 5);
-        setTodos(partOfRes);
+        setTodos(res);
       } catch (err) {
         console.log(err.message);
       }
@@ -32,14 +32,48 @@ const Dashboard = () => {
     }
   };
 
+  const handleAddTodo = async value => {
+    console.log(value);
+    const newTask = {
+      userId: 1,
+      title: value,
+      completed: false,
+      id: generate(),
+    };
+
+    try {
+      const response = await todosAPI.addTodo(newTask);
+      setTodos(prevTodos => [response, ...prevTodos]);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const handleEditTodo = async (todoId, value) => {
+    console.log(todoId, value);
+    const updatedTodo = todos.find(({ id }) => todoId === id);
+    const newTodo = { ...updatedTodo, title: value };
+
+    try {
+      const res = await todosAPI.updateTodo(todoId, newTodo);
+      console.log(res);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   return (
     <Container>
       <PageTitle title="Dashboard" />
       <TodoSection title="Control Panel">
-        <TodoAdd />
+        <TodoAdd onAddTodo={handleAddTodo} />
       </TodoSection>
       <TodoSection title="Todo List">
-        <TodoList tasks={todos} onDeleteTodo={handleDeleteTodo} />
+        <TodoList
+          tasks={todos}
+          onDeleteTodo={handleDeleteTodo}
+          onEditTodo={handleEditTodo}
+        />
       </TodoSection>
     </Container>
   );
