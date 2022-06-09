@@ -27,7 +27,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     getAllTodos();
-  }, [getAllTodos]);
+  }, []);
 
   const getCurrentTodo = useCallback(currentItem => {
     setCurrentTodo(currentItem);
@@ -74,7 +74,7 @@ const Dashboard = () => {
     toggleModal();
   }, []);
 
-  const handleEditTodo = useCallback(
+  const handleEditTodoText = useCallback(
     async (todoId, value) => {
       //useCallback
       const updatedTodo = todos.find(({ id }) => todoId === id);
@@ -98,6 +98,23 @@ const Dashboard = () => {
     [todos],
   );
 
+  const handleEditTodoStatus = useCallback(
+    async (todoId, updatedTodo) => {
+      try {
+        const res = await todosAPI.updateTodo(todoId, updatedTodo);
+        console.log(res);
+        setTodos(prev => {
+          const index = prev.findIndex(({ id }) => todoId === id);
+          prev.splice(index, 1);
+          return [res, ...prev];
+        });
+      } catch (error) {
+        console.log(error.message);
+      }
+    },
+    [todos],
+  );
+
   const handleFilterChange = useCallback(e => {
     // useCallback
     const { value } = e.target;
@@ -109,30 +126,29 @@ const Dashboard = () => {
   };
 
   const { competedTodos, notCompleted } = useMemo(() => {
-    const normalizedFilter = filter.toLocaleLowerCase();
-
+    // const normalizedFilter = filter.toLocaleLowerCase();
+    // const completedTask =
     return {
-      competedTodos: todos || [],
-      notCompleted: todos || [],
+      competedTodos:
+        (Boolean(todos.length) && todos.filter(({ completed }) => completed)) ||
+        [],
+      notCompleted:
+        (Boolean(todos.length) &&
+          todos.filter(({ completed }) => !completed)) ||
+        [],
     };
-  }, [todos, filter]);
+  }, [todos]);
 
   const filteredTodos = useMemo(() => {
     const normalizedFilter = filter.toLocaleLowerCase();
+    const sortedTodo = [...notCompleted, ...competedTodos];
     return (
       Boolean(todos.length) &&
-      todos.filter(({ title }) =>
+      sortedTodo.filter(({ title }) =>
         title.toLowerCase().includes(normalizedFilter),
       )
     );
-  }, [todos, filter]);
-
-  // const filteredTodos = () => {
-  //   const normalizedFilter = filter.toLocaleLowerCase();
-  //   return todos?.filter(({ title }) =>
-  //     title.toLowerCase().includes(normalizedFilter),
-  //   );
-  // };
+  }, [todos, filter, notCompleted, competedTodos]);
 
   return (
     <>
@@ -150,7 +166,7 @@ const Dashboard = () => {
           <TodoList
             tasks={filteredTodos}
             onDeleteTodo={handleDeleteTodo}
-            onEditTodo={handleEditTodo}
+            onEditTodoStatus={handleEditTodoStatus}
             openModal={toggleModal}
             getTodo={getCurrentTodo}
           />
@@ -164,7 +180,7 @@ const Dashboard = () => {
         <TodoForm
           todo={currentTodo}
           onAddTodo={handleAddTodo}
-          onEditTodo={handleEditTodo}
+          onEditTodoText={handleEditTodoText}
         />
         <Toaster />
       </Modal>

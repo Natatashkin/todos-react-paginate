@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 const TodoForm = ({
   todo: { title: text, id: todoId },
   onAddTodo,
-  onEditTodo,
+  onEditTodoText,
 }) => {
   const [taskText, setTaskText] = useState(text);
   const [disabledBtn, setDisabledBtn] = useState(false);
@@ -26,7 +26,7 @@ const TodoForm = ({
       }
 
       if (text) {
-        onEditTodo(todoId, taskText);
+        onEditTodoText(todoId, taskText);
         resetForm();
         setDisabledBtn(true);
         return;

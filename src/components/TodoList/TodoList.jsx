@@ -2,7 +2,13 @@ import Todo from '../Todo';
 import './TodoList.scss';
 import { Oval } from 'react-loader-spinner';
 
-const TodoList = ({ tasks, onDeleteTodo, getTodo, openModal }) => {
+const TodoList = ({
+  tasks,
+  onEditTodoStatus,
+  onDeleteTodo,
+  getTodo,
+  openModal,
+}) => {
   return (
     <ul className="todo-list">
       {tasks ? (
@@ -11,6 +17,7 @@ const TodoList = ({ tasks, onDeleteTodo, getTodo, openModal }) => {
             key={task.id}
             task={task}
             onDeleteTodo={onDeleteTodo}
+            onEditTodoStatus={onEditTodoStatus}
             openModal={openModal}
             getTodo={getTodo}
           />
