@@ -1,8 +1,6 @@
 import './Modal.scss';
 import { useEffect } from 'react';
-import { createPortal } from 'react-dom';
-
-const modalRoot = document.querySelector('#root-modal');
+import { Portal } from 'components/Portal';
 
 const Modal = ({ children, open, onClose, onEscClose }) => {
   useEffect(() => {
@@ -17,14 +15,24 @@ const Modal = ({ children, open, onClose, onEscClose }) => {
     return () => document.removeEventListener('keydown', onEscKeyPress);
   }, [onEscClose, open]);
 
-  return open
-    ? createPortal(
+  return (
+    <Portal>
+      {open && (
         <div className="dropbox" onClick={onClose}>
           <div className="lightbox">{children}</div>
-        </div>,
-        modalRoot,
-      )
-    : null;
+        </div>
+      )}
+    </Portal>
+  );
+
+  // return open
+  //   ? createPortal(
+  //       <div className="dropbox" onClick={onClose}>
+  //         <div className="lightbox">{children}</div>
+  //       </div>,
+  //       modalRoot,
+  //     )
+  //   : null;
 };
 
 export default Modal;

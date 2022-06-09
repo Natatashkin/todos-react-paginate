@@ -1,28 +1,43 @@
 import './TodoForm.scss';
 import Button from '../Button';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import toast from 'react-hot-toast';
 
-const TodoForm = ({ onAddTodo, todoId, text = '', onEditTodo }) => {
+const TodoForm = ({
+  todo: { title: text, id: todoId },
+  onAddTodo,
+  onEditTodo,
+}) => {
   const [taskText, setTaskText] = useState(text);
-  const handleChange = e => {
+  const [disabledBtn, setDisabledBtn] = useState(false);
+
+  const handleChange = useCallback(e => {
     const { value } = e.target;
     setTaskText(value);
-  };
-  const handleSubmit = e => {
-    e.preventDefault();
-    if (!taskText) {
-      toast.error('Задание не может быть пустым');
-      return;
-    }
-    if (text) {
-      onEditTodo(todoId, taskText);
+  }, []);
+
+  const handleSubmit = useCallback(
+    e => {
+      e.preventDefault();
+      if (!taskText.trim()) {
+        toast.error('Задание не может быть пустым');
+        resetForm();
+        return;
+      }
+
+      if (text) {
+        onEditTodo(todoId, taskText);
+        resetForm();
+        setDisabledBtn(true);
+        return;
+      }
+
+      onAddTodo(taskText);
       resetForm();
-      return;
-    }
-    onAddTodo(taskText);
-    resetForm();
-  };
+      setDisabledBtn(true);
+    },
+    [taskText, text, todoId],
+  );
 
   const resetForm = () => {
     setTaskText('');
@@ -32,6 +47,7 @@ const TodoForm = ({ onAddTodo, todoId, text = '', onEditTodo }) => {
     <form className="todo-form" onSubmit={handleSubmit}>
       <label htmlFor="task">Write your task:</label>
       <textarea
+        autoFocus
         name="task"
         cols="30"
         rows="10"
@@ -39,7 +55,7 @@ const TodoForm = ({ onAddTodo, todoId, text = '', onEditTodo }) => {
         onChange={handleChange}
       ></textarea>
 
-      <Button title="Add task" type="submit" />
+      <Button title="Add task" type="submit" disabled={disabledBtn} />
     </form>
   );
 };

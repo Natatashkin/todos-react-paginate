@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Toaster } from 'react-hot-toast';
 import Container from 'components/Container';
 import * as todosAPI from 'services/todosAPI';
@@ -11,47 +11,54 @@ import Modal from 'components/Modal';
 import TodoForm from 'components/TodoForm';
 
 const Dashboard = () => {
-  const [todos, setTodos] = useState(null);
+  const [todos, setTodos] = useState([]);
   const [filter, setFilter] = useState('');
   const [openModal, setOpenModal] = useState(false);
+  const [currentTodo, setCurrentTodo] = useState(null);
 
-  useEffect(() => {
-    const getAllTodos = async () => {
-      try {
-        const res = await todosAPI.getTodos();
-        setTodos(res);
-      } catch (err) {
-        console.log(err.message);
-      }
-    };
-    getAllTodos();
+  const getAllTodos = useCallback(async () => {
+    try {
+      const res = await todosAPI.getTodos();
+      setTodos(res);
+    } catch (err) {
+      console.log(err.message);
+    }
   }, []);
 
-  const handleOpenModal = () => {
-    setOpenModal(true);
-  };
+  useEffect(() => {
+    getAllTodos();
+  }, [getAllTodos]);
 
-  const handleCloseModalClick = e => {
+  const getCurrentTodo = useCallback(currentItem => {
+    setCurrentTodo(currentItem);
+  }, []);
+
+  const toggleModal = useCallback(todo => {
+    getCurrentTodo(todo);
+    setOpenModal(prev => !prev);
+  }, []);
+
+  const handleCloseModalClick = useCallback(e => {
     if (e.target === e.currentTarget) {
       setOpenModal(false);
     }
-  };
+  }, []);
 
-  const handleCloseModalEscClick = () => {
-    setOpenModal(false);
-  };
+  const handleDeleteTodo = useCallback(
+    async id => {
+      try {
+        await todosAPI.deleteTodo(id);
+        const newTodos = todos.filter(({ id: todoId }) => todoId !== id);
+        setTodos(newTodos);
+      } catch (error) {
+        console.log(error.message);
+      }
+    },
+    [todos],
+  );
 
-  const handleDeleteTodo = async id => {
-    try {
-      await todosAPI.deleteTodo(id);
-      const newTodos = todos.filter(({ id: todoId }) => todoId !== id);
-      setTodos(newTodos);
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
-
-  const handleAddTodo = async value => {
+  const handleAddTodo = useCallback(async value => {
+    // useCallback
     const newTask = {
       userId: 1,
       title: value,
@@ -64,68 +71,104 @@ const Dashboard = () => {
     } catch (error) {
       console.log(error.message);
     }
-  };
+    toggleModal();
+  }, []);
 
-  const handleEditTodo = async (todoId, value) => {
-    const updatedTodo = todos.find(({ id }) => todoId === id);
-    const newTodo = { ...updatedTodo, title: value };
+  const handleEditTodo = useCallback(
+    async (todoId, value) => {
+      //useCallback
+      const updatedTodo = todos.find(({ id }) => todoId === id);
+      const newTodo = { ...updatedTodo, title: value };
 
-    try {
-      const res = await todosAPI.updateTodo(todoId, newTodo);
-      const index = todos.findIndex(todo => todo.id === todoId);
-      const updatedTodos = todos.map((todo, idx) =>
-        idx === index ? res : todo,
-      );
-      setTodos(updatedTodos);
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
+      try {
+        const res = await todosAPI.updateTodo(todoId, newTodo);
+        // const updatedTodos = todos.map((todo, idx) =>
+        //   idx === index ? res : todo,
+        // );
+        setTodos(prev => {
+          const index = prev.findIndex(todo => todo.id === todoId);
+          prev.splice(index, 1);
+          return [res, ...prev];
+        });
+      } catch (error) {
+        console.log(error.message);
+      }
+      toggleModal();
+    },
+    [todos],
+  );
 
-  const handleFilterChange = e => {
+  const handleFilterChange = useCallback(e => {
+    // useCallback
     const { value } = e.target;
     setFilter(value);
-  };
+  }, []);
 
   const handleFilterReset = () => {
     setFilter('');
   };
 
-  const filteredTodos = () => {
+  const { competedTodos, notCompleted } = useMemo(() => {
     const normalizedFilter = filter.toLocaleLowerCase();
-    return todos?.filter(({ title }) =>
-      title.toLowerCase().includes(normalizedFilter),
+
+    return {
+      competedTodos: todos || [],
+      notCompleted: todos || [],
+    };
+  }, [todos, filter]);
+
+  const filteredTodos = useMemo(() => {
+    const normalizedFilter = filter.toLocaleLowerCase();
+    return (
+      Boolean(todos.length) &&
+      todos.filter(({ title }) =>
+        title.toLowerCase().includes(normalizedFilter),
+      )
     );
-  };
+  }, [todos, filter]);
+
+  // const filteredTodos = () => {
+  //   const normalizedFilter = filter.toLocaleLowerCase();
+  //   return todos?.filter(({ title }) =>
+  //     title.toLowerCase().includes(normalizedFilter),
+  //   );
+  // };
 
   return (
-    <Container>
-      <PageTitle title="Dashboard" />
-      <TodoSection title="Control Panel">
-        <TodoAdd openModal={handleOpenModal} />
-      </TodoSection>
-      <TodoSection title="Todo List">
-        <Filter
-          value={filter}
-          onChange={handleFilterChange}
-          onClick={handleFilterReset}
-        />
-        <TodoList
-          tasks={filteredTodos()}
-          onDeleteTodo={handleDeleteTodo}
-          onEditTodo={handleEditTodo}
-          openModal={handleOpenModal}
-        />
-      </TodoSection>
+    <>
+      <Container>
+        <PageTitle title="Dashboard" />
+        <TodoSection title="Control Panel">
+          <TodoAdd openModal={toggleModal} />
+        </TodoSection>
+        <TodoSection title="Todo List">
+          <Filter
+            value={filter}
+            onChange={handleFilterChange}
+            onClick={handleFilterReset}
+          />
+          <TodoList
+            tasks={filteredTodos}
+            onDeleteTodo={handleDeleteTodo}
+            onEditTodo={handleEditTodo}
+            openModal={toggleModal}
+            getTodo={getCurrentTodo}
+          />
+        </TodoSection>
+      </Container>
       <Modal
         open={openModal}
         onClose={handleCloseModalClick}
-        onEscClose={handleCloseModalEscClick}
+        onEscClose={() => setOpenModal(false)}
       >
-        <TodoForm onAddTodo={handleAddTodo} />
+        <TodoForm
+          todo={currentTodo}
+          onAddTodo={handleAddTodo}
+          onEditTodo={handleEditTodo}
+        />
         <Toaster />
       </Modal>
-    </Container>
+    </>
   );
 };
 

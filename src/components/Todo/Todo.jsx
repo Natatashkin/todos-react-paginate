@@ -1,26 +1,32 @@
 import './Todo.scss';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import classNames from 'classnames';
 import IconButton from '../IconButton';
 import { RiDeleteBin6Line, RiEditLine } from 'react-icons/ri';
 
-const Todo = ({ task, onDeleteTodo, onEditTodo, openModal }) => {
+const Todo = ({ task, onDeleteTodo, openModal }) => {
   const { completed, title, id } = task;
   const [checked, setChecked] = useState(completed);
   const [disabledDelete, setDisabledDelete] = useState(false);
   const [disabledEdit, setDisabledEdit] = useState(completed);
 
-  const handleChange = e => {
-    const { checked: innerChecked } = e.target;
-    setChecked(innerChecked);
-    setDisabledEdit(true);
-  };
+  const handleChange = useCallback(
+    e => {
+      const { checked: innerChecked } = e.target;
+      setChecked(innerChecked);
+      setDisabledEdit(!checked);
+    },
+    [setChecked, setDisabledEdit, checked],
+  );
 
-  const handleDelitClick = id => {
-    onDeleteTodo(id);
-    setDisabledDelete(true);
-    setDisabledEdit(true);
-  };
+  const handleDelitClick = useCallback(
+    id => {
+      onDeleteTodo(id);
+      setDisabledDelete(true);
+      setDisabledEdit(true);
+    },
+    [onDeleteTodo, setDisabledDelete, setDisabledEdit],
+  );
 
   return (
     <>
@@ -44,7 +50,7 @@ const Todo = ({ task, onDeleteTodo, onEditTodo, openModal }) => {
           <IconButton
             icon={<RiEditLine />}
             type="button"
-            onClick={openModal}
+            onClick={() => openModal(task)}
             disabled={disabledEdit}
           />
           <IconButton

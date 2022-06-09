@@ -1,15 +1,20 @@
 import { NavLink } from 'react-router-dom';
 import './NavBar.scss';
 
+const links = [
+  // map NavLinks
+  { id: '1', path: '/', title: 'Home' },
+  { id: '2', path: '/dashboard', title: 'Dashboard' },
+];
+
 const NavBar = () => {
   return (
     <nav className="navbar">
-      <NavLink to="/" className="link">
-        Home
-      </NavLink>
-      <NavLink to="/dashboard" className="link">
-        Dashboard
-      </NavLink>
+      {links.map(({ id, path, title }) => (
+        <NavLink key={id} to={path} className="link">
+          {title}
+        </NavLink>
+      ))}
     </nav>
   );
 };
