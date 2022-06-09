@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Toaster } from 'react-hot-toast';
 import Container from 'components/Container';
 import * as todosAPI from 'services/todosAPI';
 import TodoSection from 'components/TodoSection';
@@ -6,10 +7,13 @@ import PageTitle from 'components/PageTitle';
 import TodoAdd from 'components/TodoAdd';
 import TodoList from 'components/TodoList';
 import Filter from 'components/Filter';
+import Modal from 'components/Modal';
+import TodoForm from 'components/TodoForm';
 
 const Dashboard = () => {
   const [todos, setTodos] = useState(null);
   const [filter, setFilter] = useState('');
+  const [openModal, setOpenModal] = useState(false);
 
   useEffect(() => {
     const getAllTodos = async () => {
@@ -22,6 +26,20 @@ const Dashboard = () => {
     };
     getAllTodos();
   }, []);
+
+  const handleOpenModal = () => {
+    setOpenModal(true);
+  };
+
+  const handleCloseModalClick = e => {
+    if (e.target === e.currentTarget) {
+      setOpenModal(false);
+    }
+  };
+
+  const handleCloseModalEscClick = () => {
+    setOpenModal(false);
+  };
 
   const handleDeleteTodo = async id => {
     try {
@@ -84,7 +102,7 @@ const Dashboard = () => {
     <Container>
       <PageTitle title="Dashboard" />
       <TodoSection title="Control Panel">
-        <TodoAdd onAddTodo={handleAddTodo} />
+        <TodoAdd openModal={handleOpenModal} />
       </TodoSection>
       <TodoSection title="Todo List">
         <Filter
@@ -96,8 +114,17 @@ const Dashboard = () => {
           tasks={filteredTodos()}
           onDeleteTodo={handleDeleteTodo}
           onEditTodo={handleEditTodo}
+          openModal={handleOpenModal}
         />
       </TodoSection>
+      <Modal
+        open={openModal}
+        onClose={handleCloseModalClick}
+        onEscClose={handleCloseModalEscClick}
+      >
+        <TodoForm onAddTodo={handleAddTodo} />
+        <Toaster />
+      </Modal>
     </Container>
   );
 };

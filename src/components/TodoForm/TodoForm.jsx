@@ -5,14 +5,12 @@ import toast from 'react-hot-toast';
 
 const TodoForm = ({ onAddTodo, todoId, text = '', onEditTodo }) => {
   const [taskText, setTaskText] = useState(text);
-
   const handleChange = e => {
     const { value } = e.target;
     setTaskText(value);
   };
   const handleSubmit = e => {
     e.preventDefault();
-    console.log(taskText);
     if (!taskText) {
       toast.error('Задание не может быть пустым');
       return;

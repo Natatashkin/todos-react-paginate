@@ -4,13 +4,18 @@ import { createPortal } from 'react-dom';
 
 const modalRoot = document.querySelector('#root-modal');
 
-const Modal = ({ children, open, onClose }) => {
-  // useEffect(() => {
+const Modal = ({ children, open, onClose, onEscClose }) => {
+  useEffect(() => {
+    const onEscKeyPress = e => {
+      const { key: EscEvent } = e;
+      if (EscEvent === 'Escape') {
+        onEscClose();
+      }
+    };
+    document.addEventListener('keydown', onEscKeyPress);
 
-  //   document.addEventListener('keydown', onEscKeyPress);
-
-  //   return () => document.removeEventListener('keydown', onEscKeyPress);
-  // }, []);
+    return () => document.removeEventListener('keydown', onEscKeyPress);
+  }, [onEscClose, open]);
 
   return open
     ? createPortal(

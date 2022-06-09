@@ -1,18 +1,14 @@
 import './Todo.scss';
 import { useState } from 'react';
 import classNames from 'classnames';
-import { Toaster } from 'react-hot-toast';
 import IconButton from '../IconButton';
-import Modal from '../Modal';
-import TodoForm from '../TodoForm';
 import { RiDeleteBin6Line, RiEditLine } from 'react-icons/ri';
 
-const Todo = ({ task, onDeleteTodo, onEditTodo }) => {
+const Todo = ({ task, onDeleteTodo, onEditTodo, openModal }) => {
   const { completed, title, id } = task;
   const [checked, setChecked] = useState(completed);
   const [disabledDelete, setDisabledDelete] = useState(false);
   const [disabledEdit, setDisabledEdit] = useState(completed);
-  const [openModal, setOpenModal] = useState(false);
 
   const handleChange = e => {
     const { checked: innerChecked } = e.target;
@@ -23,16 +19,7 @@ const Todo = ({ task, onDeleteTodo, onEditTodo }) => {
   const handleDelitClick = id => {
     onDeleteTodo(id);
     setDisabledDelete(true);
-  };
-
-  const handleEditClick = id => {
-    setOpenModal(true);
-  };
-
-  const handleCloseModal = e => {
-    if (e.target === e.currentTarget) {
-      setOpenModal(false);
-    }
+    setDisabledEdit(true);
   };
 
   return (
@@ -57,7 +44,7 @@ const Todo = ({ task, onDeleteTodo, onEditTodo }) => {
           <IconButton
             icon={<RiEditLine />}
             type="button"
-            onClick={handleEditClick}
+            onClick={openModal}
             disabled={disabledEdit}
           />
           <IconButton
@@ -68,10 +55,6 @@ const Todo = ({ task, onDeleteTodo, onEditTodo }) => {
           />
         </div>
       </li>
-      <Modal open={openModal} onClose={handleCloseModal}>
-        <TodoForm todoId={id} text={title} onEditTodo={onEditTodo} />
-        <Toaster />
-      </Modal>
     </>
   );
 };
