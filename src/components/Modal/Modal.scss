@@ -11,10 +11,12 @@
   animation: show 300ms ease forwards;
 
   .lightbox {
+    position: relative;
     display: flex;
     flex-direction: column;
     padding: 25px;
     background-color: #fff;
+    border-radius: 4px;
   }
 }
 

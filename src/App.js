@@ -1,6 +1,6 @@
 import './App.scss';
 import { lazy } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 
 function load(page) {
   return lazy(() => import(`./pages/${page}`));
@@ -17,6 +17,7 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<HomePage />} />
           <Route path="dashboard" element={<Dashboard />} />
+          <Route path="*" element={<Navigate to="/" />} />
         </Route>
       </Routes>
     </div>

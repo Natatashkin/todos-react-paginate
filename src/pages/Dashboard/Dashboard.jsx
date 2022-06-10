@@ -126,8 +126,6 @@ const Dashboard = () => {
   };
 
   const { competedTodos, notCompleted } = useMemo(() => {
-    // const normalizedFilter = filter.toLocaleLowerCase();
-    // const completedTask =
     return {
       competedTodos:
         (Boolean(todos.length) && todos.filter(({ completed }) => completed)) ||

@@ -1,6 +1,8 @@
+import './IconButton.scss';
+
 const IconButton = ({ icon, onClick, ...args }) => {
   return (
-    <button onClick={onClick} {...args}>
+    <button className="icon-button" onClick={onClick} {...args}>
       {icon}
     </button>
   );
