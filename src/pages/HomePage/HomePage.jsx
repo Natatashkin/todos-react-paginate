@@ -1,7 +1,10 @@
-import PageTitle from 'components/PageTitle';
+import { Container } from 'components/Container';
+import { PageTitle } from 'components/PageTitle';
 const HomePage = () => (
   <div>
-    <PageTitle title="HomePage" />
+    <Container>
+      <PageTitle title="HomePage" />
+    </Container>
   </div>
 );
 

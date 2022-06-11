@@ -1,11 +1,9 @@
-import './Modal.scss';
 import { useEffect } from 'react';
-import IconButton from 'components/IconButton';
+import { IconButton } from 'components/IconButton';
 import { Portal } from 'components/Portal';
-import { RiCloseLine } from 'react-icons/ri';
-import classNames from 'classnames';
+import { RiCloseFill } from 'react-icons/ri';
 
-const Modal = ({ children, open, onClose, onEscClose }) => {
+const Modal = ({ children, open, onClose, onBackdropClose, onEscClose }) => {
   useEffect(() => {
     const onEscKeyPress = e => {
       const { key: EscEvent } = e;
@@ -21,28 +19,21 @@ const Modal = ({ children, open, onClose, onEscClose }) => {
   return (
     <Portal>
       {open && (
-        <div className="dropbox" onClick={onClose}>
+        <div className="dropbox" onClick={onBackdropClose}>
           <div className="lightbox">
             {children}
             <IconButton
-              className={classNames(['icon-button', 'icon-button--circle'])}
+              component="modal"
               type="button"
-              icon={<RiCloseLine fill="black" size="18" />}
+              icon={<RiCloseFill />}
+              tooltipText="Close"
+              onClick={onClose}
             />
           </div>
         </div>
       )}
     </Portal>
   );
-
-  // return open
-  //   ? createPortal(
-  //       <div className="dropbox" onClick={onClose}>
-  //         <div className="lightbox">{children}</div>
-  //       </div>,
-  //       modalRoot,
-  //     )
-  //   : null;
 };
 
 export default Modal;

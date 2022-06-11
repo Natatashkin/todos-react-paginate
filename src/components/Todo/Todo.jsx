@@ -1,7 +1,6 @@
-import './Todo.scss';
 import { useState, useCallback } from 'react';
 import classNames from 'classnames';
-import IconButton from '../IconButton';
+import { IconButton } from '../IconButton';
 import { RiDeleteBin6Line, RiEditLine } from 'react-icons/ri';
 
 const Todo = ({ task, onDeleteTodo, openModal, getTodo, onEditTodoStatus }) => {
@@ -51,12 +50,14 @@ const Todo = ({ task, onDeleteTodo, openModal, getTodo, onEditTodoStatus }) => {
             type="button"
             onClick={() => openModal(task)}
             disabled={disabledEdit}
+            tooltipText="Edit ToDo"
           />
           <IconButton
             icon={<RiDeleteBin6Line />}
             onClick={() => handleDelitClick(id)}
             type="button"
             disabled={disabledDelete}
+            tooltipText="Delete ToDo"
           />
         </div>
       </li>

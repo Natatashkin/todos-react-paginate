@@ -1,5 +1,5 @@
 import './Filter.scss';
-import IconButton from '../IconButton';
+import { IconButton } from '../IconButton';
 import { MdClear } from 'react-icons/md';
 
 const Filter = ({ value, onChange, onClick }) => {
@@ -10,7 +10,7 @@ const Filter = ({ value, onChange, onClick }) => {
           Find todo:
           <input type="text" name="filter" value={value} onChange={onChange} />
         </label>
-        <IconButton icon={<MdClear />} type="button" onClick={onClick} />
+        <IconButton icon={<MdClear />} type="button" onClick={onClick}  />
       </div>
     </div>
   );

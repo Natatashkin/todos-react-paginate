@@ -1,4 +1,3 @@
-import './TodoSection.scss';
 import TodoSectionTitle from '../TodoSectionTitle';
 
 const TodoSection = ({ title, children }) => {

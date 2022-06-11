@@ -1,4 +1,3 @@
-import './TodoForm.scss';
 import Button from '../Button';
 import { useState, useCallback } from 'react';
 import toast from 'react-hot-toast';
@@ -43,19 +42,30 @@ const TodoForm = ({
     setTaskText('');
   };
 
+  const resizeTextarea = () => {
+    const textarea = document.querySelector('.form-field');
+    console.log(textarea.style.fontSize);
+    textarea.style.height = `${textarea.scrollHeight}px`;
+    return textarea.scrollHeight;
+  };
+
   return (
-    <form className="todo-form" onSubmit={handleSubmit}>
-      <label htmlFor="task">Write your task:</label>
+    <form className="form" onSubmit={handleSubmit}>
+      <label htmlFor="task" className="form-label">
+        Write your task:
+      </label>
       <textarea
+        className="form-field"
         autoFocus
         name="task"
-        cols="30"
-        rows="10"
         value={taskText}
         onChange={handleChange}
+        onScroll={resizeTextarea}
       ></textarea>
 
-      <Button title="Add task" type="submit" disabled={disabledBtn} />
+      <div className="form-button">
+        <Button title="Add task" type="submit" disabled={disabledBtn} />
+      </div>
     </form>
   );
 };

@@ -1,1 +1,1 @@
-export { default } from './TodoForm';
+export { default as TodoForm } from './TodoForm';

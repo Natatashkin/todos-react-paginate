@@ -1,0 +1,35 @@
+.tooltip {
+  position: absolute;
+  top: 170%;
+  visibility: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: spaces(1) spaces(2);
+  border-radius: $radius;
+  background-color: $blue;
+  opacity: 0;
+  transition: opacity $time $cubic;
+  z-index: 3;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    display: block;
+    width: 15px;
+    height: 15px;
+    background-color: $blue;
+    transform: rotate(45deg) translateX(-70%);
+    z-index: 1;
+  }
+
+  &-text {
+    margin: 0;
+    color: $white;
+    font-size: 12px;
+    z-index: 2;
+    white-space: nowrap;
+  }
+}

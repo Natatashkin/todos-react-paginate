@@ -1,9 +1,24 @@
-import './IconButton.scss';
+import { Tooltip } from '../Tooltip';
+import classNames from 'classnames';
 
-const IconButton = ({ icon, onClick, ...args }) => {
+const IconButton = ({
+  type = 'button',
+  icon,
+  onClick,
+  tooltipText,
+  component = '',
+}) => {
   return (
-    <button className="icon-button" onClick={onClick} {...args}>
+    <button
+      className={classNames([
+        'icon-button',
+        { 'icon-button--modal': component },
+      ])}
+      type={type}
+      onClick={onClick}
+    >
       {icon}
+      {tooltipText && <Tooltip text={tooltipText} />}
     </button>
   );
 };

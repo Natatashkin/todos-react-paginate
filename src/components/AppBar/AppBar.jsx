@@ -1,10 +1,12 @@
-import './AppBar.scss';
+import { Container } from 'components/Container';
 import Navbar from '../NavBar';
 
 const AppBar = () => {
   return (
     <header className="header">
-      <Navbar />
+      <Container>
+        <Navbar />
+      </Container>
     </header>
   );
 };

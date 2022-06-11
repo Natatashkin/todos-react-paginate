@@ -1,1 +1,1 @@
-export { default } from './TodoSection';
+export { default as TodoSection } from './TodoSection';

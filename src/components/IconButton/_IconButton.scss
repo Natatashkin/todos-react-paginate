@@ -1,0 +1,36 @@
+.icon-button {
+  position: relative;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4px;
+  border-radius: 50%;
+  background-color: transparent;
+  border: none;
+  outline: none;
+
+  cursor: pointer;
+
+  &:hover,
+  &:focus {
+    background-color: $orange;
+    color: $white;
+    transition: background-color $time $cubic;
+
+    & .tooltip {
+      visibility: visible;
+      opacity: 1;
+    }
+  }
+
+  &:active {
+    background-color: $orange;
+  }
+
+  &--modal {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+  }
+}
