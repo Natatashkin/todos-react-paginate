@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Toaster } from 'react-hot-toast';
+import { Spinner } from 'components/Spinner';
 import { Container } from 'components/Container';
 import * as todosAPI from 'services/todosAPI';
 import { TodoSection } from 'components/TodoSection';
@@ -150,14 +151,20 @@ const Dashboard = () => {
           <TodoAdd openModal={toggleModal} />
         </TodoSection>
         <TodoSection title="Todo List">
-          <Filter getFilter={getFilterValue} />
-          <TodoList
-            tasks={filteredTodos}
-            onDeleteTodo={handleDeleteTodo}
-            onEditTodoStatus={handleEditTodoStatus}
-            openModal={toggleModal}
-            getTodo={getCurrentTodo}
-          />
+          {Boolean(todos.length) ? (
+            <>
+              <Filter getFilter={getFilterValue} />
+              <TodoList
+                tasks={filteredTodos}
+                onDeleteTodo={handleDeleteTodo}
+                onEditTodoStatus={handleEditTodoStatus}
+                openModal={toggleModal}
+                getTodo={getCurrentTodo}
+              />
+            </>
+          ) : (
+            <Spinner />
+          )}
         </TodoSection>
       </Container>
       <Modal

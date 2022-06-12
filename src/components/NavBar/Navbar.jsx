@@ -10,7 +10,7 @@ const NavBar = () => {
   return (
     <nav className="navbar">
       {links.map(({ id, path, title }) => (
-        <NavLink key={id} to={path} className="link">
+        <NavLink key={id} to={path} className="navbar-link">
           {title}
         </NavLink>
       ))}

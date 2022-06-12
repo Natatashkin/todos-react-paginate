@@ -1,13 +1,13 @@
 .todo {
   display: flex;
   align-items: center;
-  padding: 15px;
-  border-radius: 4px;
+  padding: spaces(4);
+  border-radius: $radius;
   background-color: $white;
   box-shadow: $shadow;
 
   &:not(:last-child) {
-    margin-bottom: 15px;
+    margin-bottom: spaces(4);
   }
 
   &:hover {
@@ -17,8 +17,9 @@
   &-task {
     flex-grow: 1;
     text-align: left;
-    padding: 0 15px;
-    transition: text-decorationlor 0.2s ease-in-out;
+    padding: 0 spaces(4);
+    transition: text-decoration $time $cubic, color $time $cubic;
+
     &--completed {
       color: lightgrey;
       text-decoration: line-through;
