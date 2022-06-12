@@ -12,13 +12,13 @@ const TodoForm = ({
 
   const handleChange = useCallback(e => {
     const { value } = e.target;
-    setTaskText(value);
+    setTaskText(value.trim());
   }, []);
 
   const handleSubmit = useCallback(
     e => {
       e.preventDefault();
-      if (!taskText.trim()) {
+      if (!taskText) {
         toast.error('Задание не может быть пустым');
         resetForm();
         return;
@@ -42,9 +42,9 @@ const TodoForm = ({
     setTaskText('');
   };
 
-  const resizeTextarea = () => {
-    const textarea = document.querySelector('.form-field');
-    console.log(textarea.style.fontSize);
+  const resizeTextarea = e => {
+    const textarea = e.target;
+    console.log(textarea.childNodes[0].offsetHeight);
     textarea.style.height = `${textarea.scrollHeight}px`;
     return textarea.scrollHeight;
   };

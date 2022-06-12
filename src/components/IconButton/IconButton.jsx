@@ -5,6 +5,7 @@ const IconButton = ({
   type = 'button',
   icon,
   onClick,
+  disabled,
   tooltipText,
   component = '',
 }) => {
@@ -15,6 +16,7 @@ const IconButton = ({
         { 'icon-button--modal': component },
       ])}
       type={type}
+      disabled={disabled}
       onClick={onClick}
     >
       {icon}

@@ -1,0 +1,36 @@
+.filter {
+  &-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding-bottom: spaces(4);
+  }
+
+  &-title {
+    position: absolute;
+    top: 0;
+    left: spaces(2);
+    transition: transform $time $cubic;
+  }
+
+  &-input {
+    padding: spaces(1);
+    margin-right: spaces(2);
+    border: 1px solid $grey;
+    border-radius: $radius;
+
+    &:not(:placeholder-shown),
+    &:hover,
+    &:focus {
+      border: 1px solid transparent;
+      outline: 1px solid $blue;
+
+      & + .filter-title {
+        transform: translate(spaces(-2), -100%);
+
+        color: $blue;
+        font-size: 12px;
+      }
+    }
+  }
+}

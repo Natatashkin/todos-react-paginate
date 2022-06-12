@@ -115,15 +115,9 @@ const Dashboard = () => {
     [todos],
   );
 
-  const handleFilterChange = useCallback(e => {
-    // useCallback
-    const { value } = e.target;
+  const getFilterValue = useCallback(value => {
     setFilter(value);
   }, []);
-
-  const handleFilterReset = () => {
-    setFilter('');
-  };
 
   const { competedTodos, notCompleted } = useMemo(() => {
     return {
@@ -156,11 +150,7 @@ const Dashboard = () => {
           <TodoAdd openModal={toggleModal} />
         </TodoSection>
         <TodoSection title="Todo List">
-          <Filter
-            value={filter}
-            onChange={handleFilterChange}
-            onClick={handleFilterReset}
-          />
+          <Filter getFilter={getFilterValue} />
           <TodoList
             tasks={filteredTodos}
             onDeleteTodo={handleDeleteTodo}
