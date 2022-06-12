@@ -13,6 +13,7 @@ import { TodoForm } from 'components/TodoForm';
 
 const Dashboard = () => {
   const [todos, setTodos] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState('');
   const [openModal, setOpenModal] = useState(false);
   const [currentTodo, setCurrentTodo] = useState(null);
@@ -21,7 +22,9 @@ const Dashboard = () => {
     try {
       const res = await todosAPI.getTodos();
       setTodos(res);
+      setIsLoading(false);
     } catch (err) {
+      setIsLoading(false);
       console.log(err.message);
     }
   }, []);
@@ -151,7 +154,9 @@ const Dashboard = () => {
           <TodoAdd openModal={toggleModal} />
         </TodoSection>
         <TodoSection title="Todo List">
-          {Boolean(todos.length) ? (
+          {isLoading ? (
+            <Spinner />
+          ) : (
             <>
               <Filter getFilter={getFilterValue} />
               <TodoList
@@ -162,8 +167,6 @@ const Dashboard = () => {
                 getTodo={getCurrentTodo}
               />
             </>
-          ) : (
-            <Spinner />
           )}
         </TodoSection>
       </Container>

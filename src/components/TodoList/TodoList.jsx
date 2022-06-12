@@ -9,16 +9,17 @@ const TodoList = ({
 }) => {
   return (
     <ul className="todo-list">
-      {tasks.map(task => (
-        <Todo
-          key={task.id}
-          task={task}
-          onDeleteTodo={onDeleteTodo}
-          onEditTodoStatus={onEditTodoStatus}
-          openModal={openModal}
-          getTodo={getTodo}
-        />
-      ))}
+      {Boolean(tasks.length) &&
+        tasks.map(task => (
+          <Todo
+            key={task.id}
+            task={task}
+            onDeleteTodo={onDeleteTodo}
+            onEditTodoStatus={onEditTodoStatus}
+            openModal={openModal}
+            getTodo={getTodo}
+          />
+        ))}
     </ul>
   );
 };
