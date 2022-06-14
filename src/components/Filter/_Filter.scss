@@ -1,7 +1,7 @@
 .filter {
   display: flex;
   align-items: center;
-  width: 100%;
+  flex-grow: 1;
   color: $darkGrey;
 
   &-wrapper {
@@ -72,7 +72,7 @@
 
 .status-list {
   display: flex;
-  align-items: caenter;
+  align-items: center;
   flex-grow: 1;
 
   & li {

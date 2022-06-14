@@ -153,7 +153,7 @@ const Dashboard = () => {
           <Option title="Add Todo">
             <IconButton icon={<RiPlayListAddLine />} onClick={toggleModal} />
           </Option>
-          <Option title="Search filter">
+          <Option title="Search Todo filter">
             <Filter getFilter={getFilterValue} />
           </Option>
         </TodoSection>
