@@ -136,6 +136,7 @@ const Dashboard = () => {
   }, [todos]);
 
   const filteredTodos = useMemo(() => {
+    console.log(filter);
     const normalizedFilter = filter.toLocaleLowerCase();
     const sortedTodo = [...notCompleted, ...competedTodos];
     return (

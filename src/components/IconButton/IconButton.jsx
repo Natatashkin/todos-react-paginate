@@ -4,7 +4,7 @@ import classNames from 'classnames';
 const IconButton = ({
   type = 'button',
   icon,
-  onClick,
+  onClick = () => {},
   disabled,
   tooltipText,
   component = '',

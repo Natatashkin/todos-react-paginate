@@ -1,4 +1,8 @@
 .page-title {
-  margin-top: spaces(5);
+  padding-top: spaces(5);
   margin-bottom: spaces(6);
+
+  @media (max-width: $tablet) {
+    margin-left: spaces(4);
+  }
 }

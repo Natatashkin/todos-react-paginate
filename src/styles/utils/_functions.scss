@@ -1,3 +1,7 @@
 @function spaces($space) {
   @return $space * 4px;
 }
+
+@function transition($property) {
+  @return $property $time $cubic;
+} ;
