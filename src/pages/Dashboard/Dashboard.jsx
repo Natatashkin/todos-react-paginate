@@ -106,7 +106,6 @@ const Dashboard = () => {
     async (todoId, updatedTodo) => {
       try {
         const res = await todosAPI.updateTodo(todoId, updatedTodo);
-        console.log(res);
         setTodos(prev => {
           const index = prev.findIndex(({ id }) => todoId === id);
           prev.splice(index, 1);
@@ -120,6 +119,7 @@ const Dashboard = () => {
   );
 
   const getFilterValue = useCallback(value => {
+    console.log(value);
     setFilter(value);
   }, []);
 
@@ -136,16 +136,17 @@ const Dashboard = () => {
   }, [todos]);
 
   const filteredTodos = useMemo(() => {
-    console.log(filter);
-    const normalizedFilter = filter.toLocaleLowerCase();
-    const sortedTodo = [...notCompleted, ...competedTodos];
-    return (
-      Boolean(todos.length) &&
-      sortedTodo.filter(({ title }) =>
-        title.toLowerCase().includes(normalizedFilter),
-      )
-    );
-  }, [todos, filter, notCompleted, competedTodos]);
+    return todos;
+
+    // const normalizedFilter = filter.toLocaleLowerCase();
+    // const sortedTodo = [...notCompleted, ...competedTodos];
+    // return (
+    //   Boolean(todos.length) &&
+    //   sortedTodo.filter(({ title }) =>
+    //     title.toLowerCase().includes(normalizedFilter),
+    //   )
+    // );
+  }, [todos]);
 
   return (
     <>
