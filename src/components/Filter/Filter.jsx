@@ -1,19 +1,17 @@
 import { Button } from '../Button';
-import { MdClear } from 'react-icons/md';
-import { useState, useCallback, useRef } from 'react';
-import classNames from 'classnames';
-import { RiSearchLine } from 'react-icons/ri';
+import { useState } from 'react';
+// import classNames from 'classnames';
 
 const statusOptions = [
   {
     id: 'complited',
     value: 'completed',
-    label: 'Complited',
+    label: 'Completed',
   },
   {
     id: 'notCompleted',
     value: 'notCompleted',
-    label: 'Not Complited',
+    label: 'Not Completed',
   },
   {
     id: 'all',
@@ -34,8 +32,13 @@ const Filter = ({ getFilter }) => {
     console.log(e.target.value);
     setCheckedStatus(e.target.value);
   };
-  const handleSubmit = () => {};
-  // console.log(checkedStatus);
+  const handleSubmit = e => {
+    e.preventDevault();
+    console.log(inputValue);
+    console.log(checkedStatus);
+    console.log({ inputValue, checkedStatus });
+  };
+
   return (
     <form className="filter" onSubmit={handleSubmit}>
       <div className="filter-wrapper">
@@ -48,23 +51,21 @@ const Filter = ({ getFilter }) => {
         />
       </div>
       <ul className="status-list">
-        {statusOptions.map(({ id, value, label, checked }) => {
-          return (
-            <li key={id}>
-              <input
-                type="radio"
-                name="status"
-                id={id}
-                value={value}
-                checked={checkedStatus === value}
-                onChange={handleStatusChange}
-              />
-              <label htmlFor="all">{label}</label>
-            </li>
-          );
-        })}
+        {statusOptions.map(({ id, value, label }) => (
+          <li key={id}>
+            <input
+              type="radio"
+              name="status"
+              id={id}
+              value={value}
+              checked={checkedStatus === value}
+              onChange={handleStatusChange}
+            />
+            <label htmlFor="all">{label}</label>
+          </li>
+        ))}
       </ul>
-      <Button type="submit" title="Search" />
+      <Button type="submit" title="submit" />
       <Button type="button" title="Reset" />
     </form>
   );

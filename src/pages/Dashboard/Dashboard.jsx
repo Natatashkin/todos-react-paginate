@@ -62,7 +62,6 @@ const Dashboard = () => {
   );
 
   const handleAddTodo = useCallback(async value => {
-    // useCallback
     const newTask = {
       userId: 1,
       title: value,
@@ -80,15 +79,11 @@ const Dashboard = () => {
 
   const handleEditTodoText = useCallback(
     async (todoId, value) => {
-      //useCallback
       const updatedTodo = todos.find(({ id }) => todoId === id);
       const newTodo = { ...updatedTodo, title: value };
 
       try {
         const res = await todosAPI.updateTodo(todoId, newTodo);
-        // const updatedTodos = todos.map((todo, idx) =>
-        //   idx === index ? res : todo,
-        // );
         setTodos(prev => {
           const index = prev.findIndex(todo => todo.id === todoId);
           prev.splice(index, 1);
@@ -154,21 +149,19 @@ const Dashboard = () => {
         <PageTitle title="Dashboard" />
         <TodoSection title="Control Panel">
           <TodoAdd openModal={toggleModal} />
+          <Filter getFilter={getFilterValue} />
         </TodoSection>
         <TodoSection title="Todo List">
           {isLoading ? (
             <Spinner />
           ) : (
-            <>
-              <Filter getFilter={getFilterValue} />
-              <TodoList
-                tasks={filteredTodos}
-                onDeleteTodo={handleDeleteTodo}
-                onEditTodoStatus={handleEditTodoStatus}
-                openModal={toggleModal}
-                getTodo={getCurrentTodo}
-              />
-            </>
+            <TodoList
+              tasks={filteredTodos}
+              onDeleteTodo={handleDeleteTodo}
+              onEditTodoStatus={handleEditTodoStatus}
+              openModal={toggleModal}
+              getTodo={getCurrentTodo}
+            />
           )}
         </TodoSection>
       </Container>

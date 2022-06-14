@@ -12,7 +12,7 @@ const TodoForm = ({
 
   const handleChange = useCallback(e => {
     const { value } = e.target;
-    setTaskText(value.trim());
+    setTaskText(value);
   }, []);
 
   const handleSubmit = useCallback(
@@ -31,7 +31,7 @@ const TodoForm = ({
         return;
       }
 
-      onAddTodo(taskText);
+      onAddTodo(taskText.trim());
       resetForm();
       setDisabledBtn(true);
     },
@@ -44,7 +44,6 @@ const TodoForm = ({
 
   const resizeTextarea = e => {
     const textarea = e.target;
-    console.log(textarea.childNodes[0].offsetHeight);
     textarea.style.height = `${textarea.scrollHeight}px`;
     return textarea.scrollHeight;
   };
@@ -64,7 +63,11 @@ const TodoForm = ({
       ></textarea>
 
       <div className="form-button">
-        <Button title="Add task" type="submit" disabled={disabledBtn} />
+        <Button
+          title={text && 'Edit task'}
+          type="submit"
+          disabled={disabledBtn}
+        />
       </div>
     </form>
   );
