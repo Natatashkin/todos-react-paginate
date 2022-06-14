@@ -1,7 +1,7 @@
 .filter {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  margin-bottom: spaces(4);
+  width: 100%;
   color: $darkGrey;
 
   &-wrapper {
@@ -17,17 +17,17 @@
     border-radius: $radius;
     transition: border $time $cubic;
 
-    &:hover {
-      border: 1px solid $blue;
+    // &:hover {
+    //   border: 1px solid $blue;
 
-      & > .filter-title {
-        color: $blue;
-      }
-    }
+    //   & > .filter-title {
+    //     color: $blue;
+    //   }
+    // }
 
-    &--onFocus {
-      border: 1px solid $blue;
-    }
+    // &--onFocus {
+    //   border: 1px solid $blue;
+    // }
   }
 
   &-title {
@@ -37,26 +37,54 @@
     transform: translateY(-50%);
     transition: transition(color), transition(translate);
 
-    &--onFocus {
-      transform: translate(spaces(-2), -220%);
-      color: $blue;
-    }
+    // &--onFocus {
+    //   transform: translate(spaces(-2), -220%);
+    //   color: $blue;
+    // }
 
-    &--onClick {
-      transform: translate(spaces(-2), -220%);
-      color: $blue;
-    }
+    // &--onClick {
+    //   transform: translate(spaces(-2), -220%);
+    //   color: $blue;
+    // }
   }
 
   &-input {
-    padding: spaces(2);
+    padding: spaces(1) spaces(2);
     margin-right: spaces(1);
-    max-width: 190px;
+    max-width: 155px;
     border: none;
     border-radius: $radius;
 
     &:focus {
       outline: none;
     }
+  }
+
+  &-buttons {
+    display: flex;
+    justify-content: center;
+
+    & button {
+      margin-right: spaces(1);
+    }
+  }
+}
+
+.status-list {
+  display: flex;
+  align-items: caenter;
+  flex-grow: 1;
+
+  & li {
+    display: flex;
+    align-items: center;
+
+    &:not(:last-child) {
+      margin-right: spaces(2);
+    }
+  }
+
+  & label {
+    font-size: 14px;
   }
 }

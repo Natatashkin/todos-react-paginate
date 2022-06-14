@@ -1,5 +1,8 @@
 import { Button } from '../Button';
 import { useState } from 'react';
+import { IconButton } from 'components/IconButton';
+import { RiCloseFill } from 'react-icons/ri';
+
 // import classNames from 'classnames';
 
 const statusOptions = [
@@ -39,6 +42,10 @@ const Filter = ({ getFilter }) => {
     console.log({ inputValue, checkedStatus });
   };
 
+  const handleResetInput = () => {
+    setInputValue('');
+  };
+
   return (
     <form className="filter" onSubmit={handleSubmit}>
       <div className="filter-wrapper">
@@ -48,7 +55,15 @@ const Filter = ({ getFilter }) => {
           name="filter"
           value={inputValue}
           onChange={handleFilterChange}
+          placeholder="Search Todo"
         />
+        {inputValue && (
+          <IconButton
+            type="button"
+            icon={<RiCloseFill />}
+            onClick={handleResetInput}
+          />
+        )}
       </div>
       <ul className="status-list">
         {statusOptions.map(({ id, value, label }) => (
@@ -65,8 +80,10 @@ const Filter = ({ getFilter }) => {
           </li>
         ))}
       </ul>
-      <Button type="submit" title="submit" />
-      <Button type="button" title="Reset" />
+      <div className="filter-buttons">
+        <Button type="submit" title="Search" />
+        <Button type="button" title="Reset" />
+      </div>
     </form>
   );
 };

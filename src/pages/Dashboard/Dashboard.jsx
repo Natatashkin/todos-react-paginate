@@ -5,11 +5,13 @@ import { Container } from 'components/Container';
 import * as todosAPI from 'services/todosAPI';
 import { TodoSection } from 'components/TodoSection';
 import { PageTitle } from 'components/PageTitle';
-import { TodoAdd } from 'components/TodoAdd';
+import { Option } from 'components/Option';
+import { IconButton } from 'components/IconButton';
 import { TodoList } from 'components/TodoList';
 import { Filter } from 'components/Filter';
 import { Modal } from 'components/Modal';
 import { TodoForm } from 'components/TodoForm';
+import { RiPlayListAddLine } from 'react-icons/ri';
 
 const Dashboard = () => {
   const [todos, setTodos] = useState([]);
@@ -148,8 +150,12 @@ const Dashboard = () => {
       <Container>
         <PageTitle title="Dashboard" />
         <TodoSection title="Control Panel">
-          <TodoAdd openModal={toggleModal} />
-          <Filter getFilter={getFilterValue} />
+          <Option title="Add Todo">
+            <IconButton icon={<RiPlayListAddLine />} onClick={toggleModal} />
+          </Option>
+          <Option title="Search filter">
+            <Filter getFilter={getFilterValue} />
+          </Option>
         </TodoSection>
         <TodoSection title="Todo List">
           {isLoading ? (
