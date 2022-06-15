@@ -15,9 +15,10 @@
   }
 
   &-task {
-    flex-grow: 1;
     text-align: left;
+    flex: 1;
     padding: 0 spaces(4);
+    word-break: break-all;
     transition: text-decoration $time $cubic, color $time $cubic;
 
     &--completed {
@@ -29,5 +30,9 @@
   &-buttons {
     display: flex;
     flex-wrap: nowrap;
+
+    & button:not(:last-child) {
+      margin-right: spaces(1);
+    }
   }
 }

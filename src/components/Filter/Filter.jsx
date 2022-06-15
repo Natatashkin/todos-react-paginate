@@ -74,42 +74,44 @@ const Filter = ({ defaultQuery, defaultStatus, getFormValues }) => {
 
   return (
     <form className="filter" onSubmit={handleSubmit}>
-      <div className="filter-wrapper">
-        <input
-          className="filter-input"
-          type="text"
-          name="filter"
-          value={inputValue}
-          onChange={handleFilterChange}
-          placeholder="Search Todo"
-        />
-        {inputValue && (
-          <IconButton
-            type="button"
-            icon={<RiCloseFill />}
-            tooltipText="Clear field"
-            onClick={handleResetInput}
+      <div className="filter-options-wrapper">
+        <div className="filter-field-wrapper">
+          <input
+            className="filter-input"
+            type="text"
+            name="filter"
+            value={inputValue}
+            onChange={handleFilterChange}
+            placeholder="Search Todo"
           />
-        )}
-      </div>
-      <ul className="status-list">
-        {statusOptions.map(({ id, value, label }) => (
-          <li key={id}>
-            <input
-              type="radio"
-              name="status"
-              id={id}
-              value={value}
-              checked={checkedStatus === value}
-              onChange={handleStatusChange}
+          {inputValue && (
+            <IconButton
+              type="button"
+              icon={<RiCloseFill />}
+              tooltipText="Clear field"
+              onClick={handleResetInput}
             />
-            <label htmlFor="all">{label}</label>
-          </li>
-        ))}
-      </ul>
+          )}
+        </div>
+        <ul className="status-list">
+          {statusOptions.map(({ id, value, label }) => (
+            <li key={id}>
+              <input
+                type="radio"
+                name="status"
+                id={id}
+                value={value}
+                checked={checkedStatus === value}
+                onChange={handleStatusChange}
+              />
+              <label htmlFor="all">{label}</label>
+            </li>
+          ))}
+        </ul>
+      </div>
       <div className="filter-buttons">
-        <Button type="submit" title="Search" />
         <Button type="button" title="Reset Form" onClick={handleFormReset} />
+        <Button type="submit" title="Search" />
       </div>
     </form>
   );

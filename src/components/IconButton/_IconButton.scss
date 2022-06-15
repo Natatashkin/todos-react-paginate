@@ -4,10 +4,10 @@
   justify-content: center;
   align-items: center;
   padding: spaces(1);
-  border-radius: 50%;
-  background-color: transparent;
+  border-radius: $radius;
+  background-color: $white;
   border: none;
-  outline: none;
+  outline: 1px solid $black;
 
   cursor: pointer;
 
@@ -16,6 +16,7 @@
     background-color: $orange;
     box-shadow: $buttonOutShadow;
     color: $white;
+    outline: 1px solid $orange;
     transition: background-color $time $cubic, box-shadow $time $cubic;
 
     & .tooltip {
@@ -38,6 +39,7 @@
     background-color: $grey;
     color: $darkGrey;
     box-shadow: none;
+    outline: 1px solid $grey;
   }
 
   &--modal {
