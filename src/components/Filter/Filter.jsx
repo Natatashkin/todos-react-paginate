@@ -27,7 +27,6 @@ const Filter = ({ defaultQuery, defaultStatus, getFormValues }) => {
   const [inputValue, setInputValue] = useState(defaultQuery);
   const [checkedStatus, setCheckedStatus] = useState(defaultStatus);
 
-  useEffect(() => {}, []);
   const handleFilterChange = useCallback(({ target: { value } }) => {
     setInputValue(value);
   }, []);

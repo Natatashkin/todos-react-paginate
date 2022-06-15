@@ -13,6 +13,7 @@ import { Pagination } from 'components/Pagination';
 import { Modal } from 'components/Modal';
 import { TodoForm } from 'components/TodoForm';
 import { RiPlayListAddLine } from 'react-icons/ri';
+import { generate } from 'shortid';
 
 const defaultFilterValues = {
   query: '',
@@ -99,32 +100,19 @@ const Dashboard = () => {
     }
   }, []);
 
-  const handleDeleteTodo = useCallback(
-    async id => {
-      try {
-        await todosAPI.deleteTodo(id);
-        const newTodos = todos.filter(({ id: todoId }) => todoId !== id);
-        setTodos(newTodos);
-      } catch (error) {
-        console.log(error.message);
-      }
-    },
-    [todos],
-  );
+  const handleDeleteTodo = useCallback(async id => {
+    setTodos(prevTodos => prevTodos.filter(({ id: todoId }) => todoId !== id));
+  }, []);
 
   const handleAddTodo = useCallback(async value => {
     const newTask = {
+      id: generate(),
       userId: 1,
       title: value,
       completed: false,
     };
+    setTodos(prevTodos => [newTask, ...prevTodos]);
 
-    try {
-      const response = await todosAPI.addTodo(newTask);
-      setTodos(prevTodos => [response, ...prevTodos]);
-    } catch (error) {
-      console.log(error.message);
-    }
     toggleModal();
   }, []);
 
@@ -133,33 +121,24 @@ const Dashboard = () => {
       const updatedTodo = todos.find(({ id }) => todoId === id);
       const newTodo = { ...updatedTodo, title: value };
 
-      try {
-        const res = await todosAPI.updateTodo(todoId, newTodo);
-        setTodos(prev => {
-          const index = prev.findIndex(todo => todo.id === todoId);
-          prev.splice(index, 1);
-          return [res, ...prev];
-        });
-      } catch (error) {
-        console.log(error.message);
-      }
+      setTodos(prev => {
+        const index = prev.indexOf(todo => todo.id === todoId);
+        prev.splice(index, 1);
+        return [newTodo, ...prev];
+      });
       toggleModal();
     },
     [todos],
   );
 
   const handleEditTodoStatus = useCallback(
-    async (todoId, updatedTodo) => {
-      try {
-        const res = await todosAPI.updateTodo(todoId, updatedTodo);
-        setTodos(prev => {
-          const index = prev.findIndex(({ id }) => todoId === id);
-          prev.splice(index, 1);
-          return [res, ...prev];
-        });
-      } catch (error) {
-        console.log(error.message);
-      }
+    updatedTodo => {
+      setTodos(prev => {
+        const index = prev.findIndex(({ id }) => updatedTodo.id === id);
+        console.log(index, updatedTodo.id);
+        prev.splice(index, 1);
+        return [updatedTodo, ...prev];
+      });
     },
     [todos],
   );

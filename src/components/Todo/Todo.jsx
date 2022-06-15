@@ -15,13 +15,13 @@ const Todo = ({ task, onDeleteTodo, openModal, getTodo, onEditTodoStatus }) => {
       setChecked(innerChecked);
       setDisabledEdit(!checked);
       getTodo(task);
-      onEditTodoStatus(id, { ...task, completed: !checked });
+      onEditTodoStatus({ ...task, completed: !innerChecked });
     },
     [checked],
   );
 
-  const handleDelitClick = useCallback(id => {
-    onDeleteTodo(id);
+  const handleDeletClick = useCallback(innerId => {
+    onDeleteTodo(innerId);
     setDisabledDelete(true);
     setDisabledEdit(true);
   }, []);
@@ -54,7 +54,7 @@ const Todo = ({ task, onDeleteTodo, openModal, getTodo, onEditTodoStatus }) => {
           />
           <IconButton
             icon={<RiDeleteBin6Line />}
-            onClick={() => handleDelitClick(id)}
+            onClick={() => handleDeletClick(id)}
             type="button"
             disabled={disabledDelete}
             tooltipText="Delete ToDo"
