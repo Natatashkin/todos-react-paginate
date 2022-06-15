@@ -133,11 +133,12 @@ const Dashboard = () => {
 
   const handleEditTodoStatus = useCallback(
     updatedTodo => {
-      setTodos(prev => {
-        const index = prev.findIndex(({ id }) => updatedTodo.id === id);
-        console.log(index, updatedTodo.id);
-        prev.splice(index, 1);
-        return [updatedTodo, ...prev];
+      setTodos(prevTodos => {
+        const newTodos = prevTodos.filter(({ id }) => id !== updatedTodo.id);
+        // const index = prev.findIndex(({ id }) => updatedTodo.id === id);
+        // console.log(index, updatedTodo.id);
+        // prev.splice(index, 1);
+        return [...newTodos, updatedTodo];
       });
     },
     [todos],

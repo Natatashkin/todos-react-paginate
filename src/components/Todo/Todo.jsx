@@ -1,29 +1,28 @@
-import { useState, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import classNames from 'classnames';
 import { IconButton } from '../IconButton';
 import { RiDeleteBin6Line, RiEditLine } from 'react-icons/ri';
 
 const Todo = ({ task, onDeleteTodo, openModal, getTodo, onEditTodoStatus }) => {
   const { completed, title, id } = task;
-  const [checked, setChecked] = useState(completed);
+  const [completedStatus, setCompletedStatus] = useState(completed);
   const [disabledDelete, setDisabledDelete] = useState(false);
   const [disabledEdit, setDisabledEdit] = useState(completed);
 
   const handleChange = useCallback(
-    e => {
-      const { checked: innerChecked } = e.target;
-      setChecked(innerChecked);
-      setDisabledEdit(!checked);
-      getTodo(task);
-      onEditTodoStatus({ ...task, completed: !innerChecked });
+    async e => {
+      const { checked } = e.target;
+      setCompletedStatus(checked);
+      setDisabledEdit(checked);
+      getTodo({ ...task, completed: checked });
     },
-    [checked],
+    [task],
   );
 
-  const handleDeletClick = useCallback(innerId => {
-    onDeleteTodo(innerId);
-    setDisabledDelete(true);
+  const handleDeletClick = useCallback(() => {
     setDisabledEdit(true);
+    setDisabledDelete(true);
+    onDeleteTodo(id);
   }, []);
 
   return (
@@ -33,13 +32,13 @@ const Todo = ({ task, onDeleteTodo, openModal, getTodo, onEditTodoStatus }) => {
           className="todo-checkbox"
           type="checkbox"
           onChange={handleChange}
-          checked={checked}
+          checked={completedStatus}
           name="checkbox"
         />
         <p
           className={classNames([
             'todo-task',
-            { 'todo-task--completed': checked },
+            { 'todo-task--completed': completedStatus },
           ])}
         >
           {title}
