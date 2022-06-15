@@ -9,6 +9,7 @@ import { Option } from 'components/Option';
 import { IconButton } from 'components/IconButton';
 import { TodoList } from 'components/TodoList';
 import { Filter } from 'components/Filter';
+import { Pagination } from 'components/Pagination';
 import { Modal } from 'components/Modal';
 import { TodoForm } from 'components/TodoForm';
 import { RiPlayListAddLine } from 'react-icons/ri';
@@ -27,6 +28,51 @@ const Dashboard = () => {
   const [openModal, setOpenModal] = useState(false);
   const [currentTodo, setCurrentTodo] = useState(null);
 
+  const { competedTodos, notCompleted } = useMemo(() => {
+    return {
+      competedTodos:
+        (Boolean(todos.length) && todos.filter(({ completed }) => completed)) ||
+        [],
+      notCompleted:
+        (Boolean(todos.length) &&
+          todos.filter(({ completed }) => !completed)) ||
+        [],
+    };
+  }, [todos]);
+
+  const filteredTodos = useMemo(() => {
+    const normalizedFilter = query.toLocaleLowerCase();
+    const allSortetdTodos = [...notCompleted, ...competedTodos];
+
+    switch (status) {
+      case 'completed':
+        return Boolean(todos.length) && !query
+          ? competedTodos
+          : competedTodos.filter(({ title }) =>
+              title.toLocaleLowerCase().includes(normalizedFilter),
+            );
+      case 'notCompleted':
+        return Boolean(todos.length) && !query
+          ? notCompleted
+          : notCompleted.filter(({ title }) =>
+              title.toLocaleLowerCase().includes(normalizedFilter),
+            );
+
+      default:
+        return Boolean(todos.length) && !query
+          ? allSortetdTodos
+          : allSortetdTodos.filter(({ title }) =>
+              title.toLocaleLowerCase().includes(normalizedFilter),
+            );
+    }
+  }, [todos, status, query]);
+
+  const PAGE_LIMIT = 10;
+  const TOTAL_PAGES = useMemo(
+    () => filteredTodos.length / PAGE_LIMIT,
+    [filteredTodos, PAGE_LIMIT],
+  );
+
   const getAllTodos = useCallback(async () => {
     try {
       const res = await todosAPI.getTodos();
@@ -36,10 +82,6 @@ const Dashboard = () => {
       setIsLoading(false);
       console.log(err.message);
     }
-  }, []);
-
-  useEffect(() => {
-    getAllTodos();
   }, []);
 
   const getCurrentTodo = useCallback(currentItem => {
@@ -131,44 +173,9 @@ const Dashboard = () => {
     // setStatus(checkedStatus);
   }, []);
 
-  const { competedTodos, notCompleted } = useMemo(() => {
-    return {
-      competedTodos:
-        (Boolean(todos.length) && todos.filter(({ completed }) => completed)) ||
-        [],
-      notCompleted:
-        (Boolean(todos.length) &&
-          todos.filter(({ completed }) => !completed)) ||
-        [],
-    };
-  }, [todos]);
-
-  const filteredTodos = useMemo(() => {
-    const normalizedFilter = query.toLocaleLowerCase();
-    const allSortetdTodos = [...notCompleted, ...competedTodos];
-
-    switch (status) {
-      case 'completed':
-        return Boolean(todos.length) && !query
-          ? competedTodos
-          : competedTodos.filter(({ title }) =>
-              title.toLocaleLowerCase().includes(normalizedFilter),
-            );
-      case 'notCompleted':
-        return Boolean(todos.length) && !query
-          ? notCompleted
-          : notCompleted.filter(({ title }) =>
-              title.toLocaleLowerCase().includes(normalizedFilter),
-            );
-
-      default:
-        return Boolean(todos.length) && !query
-          ? allSortetdTodos
-          : allSortetdTodos.filter(({ title }) =>
-              title.toLocaleLowerCase().includes(normalizedFilter),
-            );
-    }
-  }, [todos, status, query]);
+  useEffect(() => {
+    getAllTodos();
+  }, []);
 
   return (
     <>
@@ -190,13 +197,16 @@ const Dashboard = () => {
           {isLoading ? (
             <Spinner />
           ) : (
-            <TodoList
-              tasks={filteredTodos}
-              onDeleteTodo={handleDeleteTodo}
-              onEditTodoStatus={handleEditTodoStatus}
-              openModal={toggleModal}
-              getTodo={getCurrentTodo}
-            />
+            <>
+              <TodoList
+                tasks={filteredTodos}
+                onDeleteTodo={handleDeleteTodo}
+                onEditTodoStatus={handleEditTodoStatus}
+                openModal={toggleModal}
+                getTodo={getCurrentTodo}
+              />
+              <Pagination totalPages={TOTAL_PAGES} />
+            </>
           )}
         </TodoSection>
       </Container>
