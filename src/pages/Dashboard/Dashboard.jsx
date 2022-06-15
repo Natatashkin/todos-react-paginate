@@ -70,7 +70,7 @@ const Dashboard = () => {
 
   const PAGE_LIMIT = 10;
   const TOTAL_PAGES = useMemo(
-    () => filteredTodos.length / PAGE_LIMIT,
+    () => Math.ceil(filteredTodos.length / PAGE_LIMIT),
     [filteredTodos, PAGE_LIMIT],
   );
 
