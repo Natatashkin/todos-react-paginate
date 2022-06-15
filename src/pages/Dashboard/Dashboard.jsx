@@ -144,17 +144,31 @@ const Dashboard = () => {
   }, [todos]);
 
   const filteredTodos = useMemo(() => {
-    return todos;
+    const normalizedFilter = query.toLocaleLowerCase();
+    const allSortetdTodos = [...notCompleted, ...competedTodos];
 
-    // const normalizedFilter = filter.toLocaleLowerCase();
-    // const sortedTodo = [...notCompleted, ...competedTodos];
-    // return (
-    //   Boolean(todos.length) &&
-    //   sortedTodo.filter(({ title }) =>
-    //     title.toLowerCase().includes(normalizedFilter),
-    //   )
-    // );
-  }, [todos]);
+    switch (status) {
+      case 'completed':
+        return Boolean(todos.length) && !query
+          ? competedTodos
+          : competedTodos.filter(({ title }) =>
+              title.toLocaleLowerCase().includes(normalizedFilter),
+            );
+      case 'notCompleted':
+        return Boolean(todos.length) && !query
+          ? notCompleted
+          : notCompleted.filter(({ title }) =>
+              title.toLocaleLowerCase().includes(normalizedFilter),
+            );
+
+      default:
+        return Boolean(todos.length) && !query
+          ? allSortetdTodos
+          : allSortetdTodos.filter(({ title }) =>
+              title.toLocaleLowerCase().includes(normalizedFilter),
+            );
+    }
+  }, [todos, status, query]);
 
   return (
     <>
