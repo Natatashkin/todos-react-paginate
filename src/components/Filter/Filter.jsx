@@ -1,5 +1,5 @@
 import { Button } from '../Button';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { IconButton } from 'components/IconButton';
 import { RiCloseFill } from 'react-icons/ri';
 
@@ -23,11 +23,11 @@ const statusOptions = [
   },
 ];
 
-const Filter = ({ getFormValues }) => {
-  // const [statusList, setStatusList] = useState(statusOptions);
-  const [inputValue, setInputValue] = useState('');
-  const [checkedStatus, setCheckedStatus] = useState('all');
+const Filter = ({ defaultQuery, defaultStatus, getFormValues }) => {
+  const [inputValue, setInputValue] = useState(defaultQuery);
+  const [checkedStatus, setCheckedStatus] = useState(defaultStatus);
 
+  useEffect(() => {}, []);
   const handleFilterChange = useCallback(({ target: { value } }) => {
     setInputValue(value);
   }, []);
@@ -36,12 +36,24 @@ const Filter = ({ getFormValues }) => {
     setCheckedStatus(e.target.value);
   }, []);
 
+  const createFormData = useCallback(() => {
+    const formData = new FormData();
+    formData.set('query', inputValue);
+    formData.set('status', checkedStatus);
+    return formData;
+  }, [inputValue, checkedStatus]);
+
+  const resetFormData = useCallback(() => {
+    const formData = new FormData();
+    formData.set('query', defaultQuery);
+    formData.set('status', defaultStatus);
+    return formData;
+  }, []);
+
   const handleSubmit = useCallback(
     e => {
       e.preventDefault();
-      const formData = new FormData();
-      formData.set('query', inputValue);
-      formData.set('status', checkedStatus);
+      const formData = createFormData();
       getFormValues(formData);
 
       // getFormValues({ inputValue, checkedStatus }));
@@ -49,14 +61,16 @@ const Filter = ({ getFormValues }) => {
     [inputValue, checkedStatus],
   );
 
-  const handleResetInput = () => {
+  const handleResetInput = useCallback(() => {
     setInputValue('');
-  };
+  }, []);
 
-  const handleFormReset = () => {
+  const handleFormReset = useCallback(() => {
     setInputValue('');
     setCheckedStatus('all');
-  };
+    const formData = resetFormData();
+    getFormValues(formData);
+  }, []);
 
   return (
     <form className="filter" onSubmit={handleSubmit}>

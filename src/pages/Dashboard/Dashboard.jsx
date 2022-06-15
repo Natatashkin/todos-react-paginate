@@ -13,11 +13,17 @@ import { Modal } from 'components/Modal';
 import { TodoForm } from 'components/TodoForm';
 import { RiPlayListAddLine } from 'react-icons/ri';
 
+const defaultFilterValues = {
+  query: '',
+  status: 'all',
+};
+
 const Dashboard = () => {
+  const { query: defaultQuery, status: defaultStatus } = defaultFilterValues;
   const [todos, setTodos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [query, setQuery] = useState('');
-  const [status, setStatus] = useState('all');
+  const [query, setQuery] = useState(defaultQuery);
+  const [status, setStatus] = useState(defaultStatus);
   const [openModal, setOpenModal] = useState(false);
   const [currentTodo, setCurrentTodo] = useState(null);
 
@@ -159,7 +165,11 @@ const Dashboard = () => {
             <IconButton icon={<RiPlayListAddLine />} onClick={toggleModal} />
           </Option>
           <Option title="Search Todo filter">
-            <Filter getFormValues={getFormValues} />
+            <Filter
+              defaultQuery={defaultQuery}
+              defaultStatus={defaultStatus}
+              getFormValues={getFormValues}
+            />
           </Option>
         </TodoSection>
         <TodoSection title="Todo List">
