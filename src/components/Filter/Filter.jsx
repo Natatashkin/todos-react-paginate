@@ -1,5 +1,5 @@
 import { Button } from '../Button';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { IconButton } from 'components/IconButton';
 import { RiCloseFill } from 'react-icons/ri';
 
@@ -23,27 +23,39 @@ const statusOptions = [
   },
 ];
 
-const Filter = ({ getFilter }) => {
+const Filter = ({ getFormValues }) => {
   // const [statusList, setStatusList] = useState(statusOptions);
   const [inputValue, setInputValue] = useState('');
   const [checkedStatus, setCheckedStatus] = useState('all');
 
-  const handleFilterChange = ({ target: { value } }) => {
+  const handleFilterChange = useCallback(({ target: { value } }) => {
     setInputValue(value);
-  };
-  const handleStatusChange = e => {
-    console.log(e.target.value);
+  }, []);
+
+  const handleStatusChange = useCallback(e => {
     setCheckedStatus(e.target.value);
-  };
-  const handleSubmit = e => {
-    e.preventDevault();
-    console.log(inputValue);
-    console.log(checkedStatus);
-    console.log({ inputValue, checkedStatus });
-  };
+  }, []);
+
+  const handleSubmit = useCallback(
+    e => {
+      e.preventDefault();
+      const formData = new FormData();
+      formData.set('query', inputValue);
+      formData.set('status', checkedStatus);
+      getFormValues(formData);
+
+      // getFormValues({ inputValue, checkedStatus }));
+    },
+    [inputValue, checkedStatus],
+  );
 
   const handleResetInput = () => {
     setInputValue('');
+  };
+
+  const handleFormReset = () => {
+    setInputValue('');
+    setCheckedStatus('all');
   };
 
   return (
@@ -61,6 +73,7 @@ const Filter = ({ getFilter }) => {
           <IconButton
             type="button"
             icon={<RiCloseFill />}
+            tooltipText="Clear field"
             onClick={handleResetInput}
           />
         )}
@@ -82,7 +95,7 @@ const Filter = ({ getFilter }) => {
       </ul>
       <div className="filter-buttons">
         <Button type="submit" title="Search" />
-        <Button type="button" title="Reset" />
+        <Button type="button" title="Reset Form" onClick={handleFormReset} />
       </div>
     </form>
   );

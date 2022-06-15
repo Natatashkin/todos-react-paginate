@@ -16,7 +16,8 @@ import { RiPlayListAddLine } from 'react-icons/ri';
 const Dashboard = () => {
   const [todos, setTodos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [filter, setFilter] = useState('');
+  const [query, setQuery] = useState('');
+  const [status, setStatus] = useState('all');
   const [openModal, setOpenModal] = useState(false);
   const [currentTodo, setCurrentTodo] = useState(null);
 
@@ -115,9 +116,13 @@ const Dashboard = () => {
     [todos],
   );
 
-  const getFilterValue = useCallback(value => {
-    console.log(value);
-    setFilter(value);
+  const getFormValues = useCallback(data => {
+    setQuery(data.get('query'));
+    setStatus(data.get('status'));
+
+    // const {inputValue, checkedStatus} = data
+    // setQuery(inputValue);
+    // setStatus(checkedStatus);
   }, []);
 
   const { competedTodos, notCompleted } = useMemo(() => {
@@ -154,7 +159,7 @@ const Dashboard = () => {
             <IconButton icon={<RiPlayListAddLine />} onClick={toggleModal} />
           </Option>
           <Option title="Search Todo filter">
-            <Filter getFilter={getFilterValue} />
+            <Filter getFormValues={getFormValues} />
           </Option>
         </TodoSection>
         <TodoSection title="Todo List">
