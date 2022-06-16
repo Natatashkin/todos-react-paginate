@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { IconButton } from '../IconButton';
 import { RiDeleteBin6Line, RiEditLine } from 'react-icons/ri';
 
-const Todo = ({ task, onDeleteTodo, openModal, getTodo, onEditTodoStatus }) => {
+const Todo = ({ task, onDeleteTodo, openModal, updateTodo }) => {
   const { completed, title, id } = task;
   const [completedStatus, setCompletedStatus] = useState(completed);
   const [disabledDelete, setDisabledDelete] = useState(false);
@@ -14,15 +14,15 @@ const Todo = ({ task, onDeleteTodo, openModal, getTodo, onEditTodoStatus }) => {
       const { checked } = e.target;
       setCompletedStatus(checked);
       setDisabledEdit(checked);
-      getTodo({ ...task, completed: checked });
+      updateTodo({ ...task, completed: checked });
     },
     [task],
   );
 
   const handleDeletClick = useCallback(() => {
-    setDisabledEdit(true);
+    setDisabledEdit(!disabledEdit);
     setDisabledDelete(true);
-    onDeleteTodo(id);
+    onDeleteTodo(task);
   }, []);
 
   return (

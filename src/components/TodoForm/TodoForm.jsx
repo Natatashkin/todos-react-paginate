@@ -2,12 +2,10 @@ import { Button } from '../Button';
 import { useState, useCallback } from 'react';
 import toast from 'react-hot-toast';
 
-const TodoForm = ({
-  todo: { title: text, id: todoId },
-  onAddTodo,
-  onEditTodoText,
-}) => {
-  const [taskText, setTaskText] = useState(text);
+const TodoForm = ({ todo, onAddTodo, updateTodo, onClose }) => {
+  console.log('открытое Todo', todo);
+  const { title } = todo;
+  const [taskText, setTaskText] = useState(title);
   const [disabledBtn, setDisabledBtn] = useState(false);
 
   const handleChange = useCallback(e => {
@@ -18,24 +16,29 @@ const TodoForm = ({
   const handleSubmit = useCallback(
     e => {
       e.preventDefault();
+      // не принимаем пустое поле текста
       if (!taskText) {
         toast.error('Задание не может быть пустым');
         resetForm();
         return;
       }
 
-      if (text) {
-        onEditTodoText(todoId, taskText);
+      // если текст в поле изначально есть, редктируем
+      if (title) {
+        updateTodo({ ...todo, title: taskText });
         resetForm();
         setDisabledBtn(true);
+        onClose();
         return;
       }
 
+      // если поле задачи изначально пустое, добавляем todo
       onAddTodo(taskText.trim());
       resetForm();
       setDisabledBtn(true);
+      onClose();
     },
-    [taskText, text, todoId],
+    [taskText, title],
   );
 
   const resetForm = () => {
@@ -64,7 +67,7 @@ const TodoForm = ({
 
       <div className="form-button">
         <Button
-          title={text && 'Edit task'}
+          title={title && console.log(title)}
           type="submit"
           disabled={disabledBtn}
         />

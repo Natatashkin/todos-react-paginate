@@ -5,6 +5,8 @@ import { RiCloseFill } from 'react-icons/ri';
 
 // import classNames from 'classnames';
 
+const DEFAULT_STATUS = 'all';
+
 const statusOptions = [
   {
     id: 'complited',
@@ -23,9 +25,9 @@ const statusOptions = [
   },
 ];
 
-const Filter = ({ defaultQuery, defaultStatus, getFormValues }) => {
-  const [inputValue, setInputValue] = useState(defaultQuery);
-  const [checkedStatus, setCheckedStatus] = useState(defaultStatus);
+const Filter = ({ getFormValues }) => {
+  const [inputValue, setInputValue] = useState('');
+  const [checkedStatus, setCheckedStatus] = useState(DEFAULT_STATUS);
 
   const handleFilterChange = useCallback(({ target: { value } }) => {
     setInputValue(value);
@@ -44,8 +46,8 @@ const Filter = ({ defaultQuery, defaultStatus, getFormValues }) => {
 
   const resetFormData = useCallback(() => {
     const formData = new FormData();
-    formData.set('query', defaultQuery);
-    formData.set('status', defaultStatus);
+    formData.set('query', '');
+    formData.set('status', DEFAULT_STATUS);
     return formData;
   }, []);
 

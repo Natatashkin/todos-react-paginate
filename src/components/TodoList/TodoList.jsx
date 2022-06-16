@@ -1,12 +1,6 @@
 import Todo from '../Todo';
 
-const TodoList = ({
-  tasks,
-  onEditTodoStatus,
-  onDeleteTodo,
-  getTodo,
-  openModal,
-}) => {
+const TodoList = ({ tasks, updateTodo, onDeleteTodo, getTodo, openModal }) => {
   return (
     <ul className="todo-list">
       {Boolean(tasks.length) &&
@@ -15,7 +9,7 @@ const TodoList = ({
             key={task.id}
             task={task}
             onDeleteTodo={onDeleteTodo}
-            onEditTodoStatus={onEditTodoStatus}
+            updateTodo={updateTodo}
             openModal={openModal}
             getTodo={getTodo}
           />
