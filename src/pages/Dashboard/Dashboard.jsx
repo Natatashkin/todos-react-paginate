@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useGetAllTodos } from 'hooks';
 import { Toaster } from 'react-hot-toast';
 import { Spinner } from 'components/Spinner';
 import { Container } from 'components/Container';
@@ -13,63 +14,62 @@ import { Modal } from 'components/Modal';
 import { TodoForm } from 'components/TodoForm';
 import { RiPlayListAddLine } from 'react-icons/ri';
 import { generate } from 'shortid';
-import { useGetAllTodos } from 'hooks';
 
 const Dashboard = () => {
-  const { todos, setTodos, isLoading } = useGetAllTodos();
-  const [visibleTodos, setVisibleTodos] = useState([]);
-  const [PaginationPage, setPaginationPage] = useState(1);
+  const { todos, isLoading } = useGetAllTodos();
+  const [filteredTodos, setFilteredTodos] = useState([]);
+
   const [query, setQuery] = useState('');
   const [status, setStatus] = useState('all');
+  const [PaginationPage, setPaginationPage] = useState(1);
   const [openModal, setOpenModal] = useState(false);
   const [currentTodo, setCurrentTodo] = useState(null);
-
   const PAGE_LIMIT = 10;
-  // const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
-    setVisibleTodos([...todos]);
+    setFilteredTodos([...todos]);
   }, [todos]);
 
   // ----- Start Sort Todos --------
   const { competedTodos, notCompleted } = useMemo(() => {
     return {
       competedTodos:
-        (Boolean(todos.length) && todos.filter(({ completed }) => completed)) ||
+        (Boolean(filteredTodos?.length) &&
+          filteredTodos.filter(({ completed }) => completed)) ||
         [],
       notCompleted:
-        (Boolean(todos.length) &&
-          todos.filter(({ completed }) => !completed)) ||
+        (Boolean(filteredTodos?.length) &&
+          filteredTodos.filter(({ completed }) => !completed)) ||
         [],
     };
-  }, [todos]);
+  }, [filteredTodos]);
 
-  const filteredTodos = useMemo(() => {
+  let filteredTodosByQuery = useMemo(() => {
     const normalizedFilter = query.toLocaleLowerCase();
     const allSortetdTodos = [...notCompleted, ...competedTodos];
 
     switch (status) {
       case 'completed':
-        return Boolean(visibleTodos.length) && !query
+        return Boolean(filteredTodos.length) && !query
           ? competedTodos
           : competedTodos.filter(({ title }) =>
               title.toLocaleLowerCase().includes(normalizedFilter),
             );
       case 'notCompleted':
-        return Boolean(visibleTodos.length) && !query
+        return Boolean(filteredTodos.length) && !query
           ? notCompleted
           : notCompleted.filter(({ title }) =>
               title.toLocaleLowerCase().includes(normalizedFilter),
             );
 
       default:
-        return Boolean(visibleTodos.length) && !query
+        return Boolean(filteredTodos.length) && !query
           ? allSortetdTodos
           : allSortetdTodos.filter(({ title }) =>
               title.toLocaleLowerCase().includes(normalizedFilter),
             );
     }
-  }, [competedTodos, notCompleted, query, status, visibleTodos.length]);
+  }, [competedTodos, notCompleted, query, status, filteredTodos]);
 
   //  -------- Start For modal --------
   const getCurrentTodo = useCallback(currentItem => {
@@ -95,12 +95,12 @@ const Dashboard = () => {
       title: value,
       completed: false,
     };
-    setVisibleTodos(prevTodos => [newTask, ...prevTodos]);
+    setFilteredTodos(prevTodos => [newTask, ...prevTodos]);
     toggleModal();
   }, []);
 
   const handleUpdateTodo = useCallback(updatedTodo => {
-    setVisibleTodos(prevTodos => {
+    setFilteredTodos(prevTodos => {
       const newTodos = prevTodos.filter(({ id }) => id !== updatedTodo.id);
       return [updatedTodo, ...newTodos];
     });
@@ -108,7 +108,7 @@ const Dashboard = () => {
 
   const handleDeleteTodo = useCallback(todoToDel => {
     const { id } = todoToDel;
-    setVisibleTodos(prevTodos =>
+    setFilteredTodos(prevTodos =>
       prevTodos.filter(({ id: todoId }) => todoId !== id),
     );
   }, []);
@@ -122,9 +122,13 @@ const Dashboard = () => {
   //  ------ Start for Pagination ---------
 
   const totalPages = useMemo(
-    () => Math.ceil(filteredTodos?.length / PAGE_LIMIT),
-    [filteredTodos.length, PAGE_LIMIT],
+    () => Math.ceil(filteredTodosByQuery?.length / PAGE_LIMIT),
+    [filteredTodosByQuery.length, PAGE_LIMIT],
   );
+
+  const lastTodos = PaginationPage * PAGE_LIMIT;
+  const firstTodos = lastTodos - PAGE_LIMIT;
+  const currentTodos = filteredTodosByQuery.slice(firstTodos, lastTodos);
 
   const handlePrevButtonClick = useCallback(() => {
     if (PaginationPage === 1) {
@@ -134,22 +138,14 @@ const Dashboard = () => {
   }, [PaginationPage]);
 
   const handleNextButtonClick = useCallback(() => {
-    if (PaginationPage > totalPages) {
+    if (PaginationPage === totalPages) {
       return;
     }
     setPaginationPage(prevPage => prevPage + 1);
   }, [PaginationPage, totalPages]);
 
-  console.log(filteredTodos);
-
-  // useEffect(() => {
-  //   if (filteredTodos.length > PAGE_LIMIT) {
-  //     setVisibleTodos(prevTodos => {
-  //       const result = prevTodos.splice(0, PAGE_LIMIT);
-  //       return [...result];
-  //     });
-  //   }
-  // }, [filteredTodos.length]);
+  console.log(filteredTodosByQuery);
+  console.log(currentTodos);
 
   return (
     <>
@@ -167,23 +163,25 @@ const Dashboard = () => {
           </Option>
         </TodoSection>
         <TodoSection title="Todo List">
-          {isLoading ? (
-            <Spinner />
-          ) : (
+          {filteredTodosByQuery !== 0 ? (
             <>
               <TodoList
-                tasks={visibleTodos}
+                tasks={currentTodos}
                 onDeleteTodo={handleDeleteTodo}
                 openModal={toggleModal}
                 updateTodo={handleUpdateTodo}
               />
-              <Pagination
-                page={PaginationPage}
-                totalPages={totalPages}
-                onPervButtonClick={handlePrevButtonClick}
-                onNextButtonClick={handleNextButtonClick}
-              />
+              {filteredTodosByQuery.length >= PAGE_LIMIT && (
+                <Pagination
+                  page={PaginationPage}
+                  totalPages={totalPages}
+                  onPervButtonClick={handlePrevButtonClick}
+                  onNextButtonClick={handleNextButtonClick}
+                />
+              )}
             </>
+          ) : (
+            <Spinner />
           )}
         </TodoSection>
       </Container>
