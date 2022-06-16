@@ -53,7 +53,7 @@ const Todo = ({ task, onDeleteTodo, openModal, updateTodo }) => {
           />
           <IconButton
             icon={<RiDeleteBin6Line />}
-            onClick={() => handleDeletClick(id)}
+            onClick={handleDeletClick}
             type="button"
             disabled={disabledDelete}
             tooltipText="Delete ToDo"

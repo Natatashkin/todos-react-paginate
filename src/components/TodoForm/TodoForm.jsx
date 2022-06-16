@@ -3,9 +3,7 @@ import { useState, useCallback } from 'react';
 import toast from 'react-hot-toast';
 
 const TodoForm = ({ todo, onAddTodo, updateTodo, onClose }) => {
-  console.log('открытое Todo', todo);
-  const { title } = todo;
-  const [taskText, setTaskText] = useState(title);
+  const [taskText, setTaskText] = useState(todo?.title || '');
   const [disabledBtn, setDisabledBtn] = useState(false);
 
   const handleChange = useCallback(e => {
@@ -23,8 +21,8 @@ const TodoForm = ({ todo, onAddTodo, updateTodo, onClose }) => {
         return;
       }
 
-      // если текст в поле изначально есть, редктируем
-      if (title) {
+      // если текст в поле изначально есть, редaктируем
+      if (todo?.title) {
         updateTodo({ ...todo, title: taskText });
         resetForm();
         setDisabledBtn(true);
@@ -38,7 +36,7 @@ const TodoForm = ({ todo, onAddTodo, updateTodo, onClose }) => {
       setDisabledBtn(true);
       onClose();
     },
-    [taskText, title],
+    [taskText, todo],
   );
 
   const resetForm = () => {
@@ -67,7 +65,7 @@ const TodoForm = ({ todo, onAddTodo, updateTodo, onClose }) => {
 
       <div className="form-button">
         <Button
-          title={title && console.log(title)}
+          title={todo?.title && 'Edit Task'}
           type="submit"
           disabled={disabledBtn}
         />

@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { Spinner } from 'components/Spinner';
 import { Container } from 'components/Container';
-// import * as todosAPI from 'services/todosAPI';
 import { TodoSection } from 'components/TodoSection';
 import { PageTitle } from 'components/PageTitle';
 import { Option } from 'components/Option';
@@ -17,11 +16,20 @@ import { generate } from 'shortid';
 import { useGetAllTodos } from 'hooks';
 
 const Dashboard = () => {
-  const { todos, setTodos, setIsLoading, isLoading } = useGetAllTodos();
+  const { todos, setTodos, isLoading } = useGetAllTodos();
+  const [visibleTodos, setVisibleTodos] = useState([]);
+  const [PaginationPage, setPaginationPage] = useState(1);
   const [query, setQuery] = useState('');
   const [status, setStatus] = useState('all');
   const [openModal, setOpenModal] = useState(false);
-  const [currentTodo, setCurrentTodo] = useState({ title: '' });
+  const [currentTodo, setCurrentTodo] = useState(null);
+
+  const PAGE_LIMIT = 10;
+  // const [totalPages, setTotalPages] = useState(1);
+
+  useEffect(() => {
+    setVisibleTodos([...todos]);
+  }, [todos]);
 
   // ----- Start Sort Todos --------
   const { competedTodos, notCompleted } = useMemo(() => {
@@ -42,42 +50,29 @@ const Dashboard = () => {
 
     switch (status) {
       case 'completed':
-        return Boolean(todos.length) && !query
+        return Boolean(visibleTodos.length) && !query
           ? competedTodos
           : competedTodos.filter(({ title }) =>
               title.toLocaleLowerCase().includes(normalizedFilter),
             );
       case 'notCompleted':
-        return Boolean(todos.length) && !query
+        return Boolean(visibleTodos.length) && !query
           ? notCompleted
           : notCompleted.filter(({ title }) =>
               title.toLocaleLowerCase().includes(normalizedFilter),
             );
 
       default:
-        return Boolean(todos.length) && !query
+        return Boolean(visibleTodos.length) && !query
           ? allSortetdTodos
           : allSortetdTodos.filter(({ title }) =>
               title.toLocaleLowerCase().includes(normalizedFilter),
             );
     }
-  }, [todos, status, query]);
-
-  // ----- End Sort Todos --------
-
-  //  ------ Start for Pagination ---------
-
-  const PAGE_LIMIT = 10;
-  const TOTAL_PAGES = useMemo(
-    () => Math.ceil(filteredTodos.length / PAGE_LIMIT),
-    [filteredTodos, PAGE_LIMIT],
-  );
-
-  //  ------ End for Pagination ---------
+  }, [competedTodos, notCompleted, query, status, visibleTodos.length]);
 
   //  -------- Start For modal --------
   const getCurrentTodo = useCallback(currentItem => {
-    console.log('currentItem', currentItem);
     setCurrentTodo(currentItem);
   }, []);
 
@@ -92,26 +87,20 @@ const Dashboard = () => {
     }
   }, []);
 
-  //  --------End For modal --------
-
   // ---------- Start Update Todos --------------
-
   const handleAddTodo = useCallback(async value => {
-    console.log('Add new task', value);
     const newTask = {
       id: generate(),
       userId: 1,
       title: value,
       completed: false,
     };
-    setTodos(prevTodos => [newTask, ...prevTodos]);
-
+    setVisibleTodos(prevTodos => [newTask, ...prevTodos]);
     toggleModal();
   }, []);
 
   const handleUpdateTodo = useCallback(updatedTodo => {
-    console.log('updatedTodo', updatedTodo);
-    setTodos(prevTodos => {
+    setVisibleTodos(prevTodos => {
       const newTodos = prevTodos.filter(({ id }) => id !== updatedTodo.id);
       return [updatedTodo, ...newTodos];
     });
@@ -119,20 +108,48 @@ const Dashboard = () => {
 
   const handleDeleteTodo = useCallback(todoToDel => {
     const { id } = todoToDel;
-    console.log('todoToDel', todoToDel);
-    setTodos(prevTodos => prevTodos.filter(({ id: todoId }) => todoId !== id));
+    setVisibleTodos(prevTodos =>
+      prevTodos.filter(({ id: todoId }) => todoId !== id),
+    );
   }, []);
 
-  // ---------- End Update Todos --------------
-
   // ------ Start for Search Todos  -------
-
   const getFormValues = useCallback(data => {
     setQuery(data.get('query'));
     setStatus(data.get('status'));
   }, []);
 
-  // ------ End for Search Todos  -------
+  //  ------ Start for Pagination ---------
+
+  const totalPages = useMemo(
+    () => Math.ceil(filteredTodos?.length / PAGE_LIMIT),
+    [filteredTodos.length, PAGE_LIMIT],
+  );
+
+  const handlePrevButtonClick = useCallback(() => {
+    if (PaginationPage === 1) {
+      return;
+    }
+    setPaginationPage(prevPage => prevPage - 1);
+  }, [PaginationPage]);
+
+  const handleNextButtonClick = useCallback(() => {
+    if (PaginationPage > totalPages) {
+      return;
+    }
+    setPaginationPage(prevPage => prevPage + 1);
+  }, [PaginationPage, totalPages]);
+
+  console.log(filteredTodos);
+
+  // useEffect(() => {
+  //   if (filteredTodos.length > PAGE_LIMIT) {
+  //     setVisibleTodos(prevTodos => {
+  //       const result = prevTodos.splice(0, PAGE_LIMIT);
+  //       return [...result];
+  //     });
+  //   }
+  // }, [filteredTodos.length]);
 
   return (
     <>
@@ -155,12 +172,17 @@ const Dashboard = () => {
           ) : (
             <>
               <TodoList
-                tasks={filteredTodos}
+                tasks={visibleTodos}
                 onDeleteTodo={handleDeleteTodo}
                 openModal={toggleModal}
                 updateTodo={handleUpdateTodo}
               />
-              <Pagination totalPages={TOTAL_PAGES} />
+              <Pagination
+                page={PaginationPage}
+                totalPages={totalPages}
+                onPervButtonClick={handlePrevButtonClick}
+                onNextButtonClick={handleNextButtonClick}
+              />
             </>
           )}
         </TodoSection>
