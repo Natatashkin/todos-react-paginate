@@ -126,9 +126,15 @@ const Dashboard = () => {
     [filteredTodosByQuery.length, PAGE_LIMIT],
   );
 
-  const lastTodos = PaginationPage * PAGE_LIMIT;
-  const firstTodos = lastTodos - PAGE_LIMIT;
-  const currentTodos = filteredTodosByQuery.slice(firstTodos, lastTodos);
+  const lastTodos = useMemo(
+    () => PaginationPage * PAGE_LIMIT,
+    [PaginationPage],
+  );
+  const firstTodos = useMemo(() => lastTodos - PAGE_LIMIT, [lastTodos]);
+  const currentTodos = useMemo(
+    () => filteredTodosByQuery.slice(firstTodos, lastTodos),
+    [lastTodos, firstTodos, filteredTodosByQuery],
+  );
 
   const handlePrevButtonClick = useCallback(() => {
     if (PaginationPage === 1) {
