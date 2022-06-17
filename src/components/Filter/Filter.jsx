@@ -1,5 +1,5 @@
 import { Button } from '../Button';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { IconButton } from 'components/IconButton';
 import { RiCloseFill } from 'react-icons/ri';
 
@@ -28,13 +28,17 @@ const statusOptions = [
 const Filter = ({ getFormValues }) => {
   const [inputValue, setInputValue] = useState('');
   const [checkedStatus, setCheckedStatus] = useState(DEFAULT_STATUS);
+  const [disableSearch, setDisableSearch] = useState(false);
+  const [disabledReset, setDisabledReset] = useState(true);
 
   const handleFilterChange = useCallback(({ target: { value } }) => {
     setInputValue(value);
+    setDisabledReset(!disabledReset);
   }, []);
 
   const handleStatusChange = useCallback(e => {
     setCheckedStatus(e.target.value);
+    setDisabledReset(!disabledReset);
   }, []);
 
   const createFormData = useCallback(() => {
@@ -56,8 +60,7 @@ const Filter = ({ getFormValues }) => {
       e.preventDefault();
       const formData = createFormData();
       getFormValues(formData);
-
-      // getFormValues({ inputValue, checkedStatus }));
+      setDisableSearch(!disableSearch);
     },
     [inputValue, checkedStatus],
   );
@@ -71,6 +74,7 @@ const Filter = ({ getFormValues }) => {
     setCheckedStatus('all');
     const formData = resetFormData();
     getFormValues(formData);
+    setDisableSearch(false);
   }, []);
 
   return (
@@ -111,8 +115,13 @@ const Filter = ({ getFormValues }) => {
         </ul>
       </div>
       <div className="filter-buttons">
-        <Button type="button" title="Reset Form" onClick={handleFormReset} />
-        <Button type="submit" title="Search" />
+        <Button
+          type="button"
+          title="Reset Form"
+          disabled={disabledReset}
+          onClick={handleFormReset}
+        />
+        <Button type="submit" title="Search" disabled={disableSearch} />
       </div>
     </form>
   );
