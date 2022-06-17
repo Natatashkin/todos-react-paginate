@@ -3,7 +3,7 @@ import Todo from '../Todo';
 const TodoList = ({ tasks, updateTodo, onDeleteTodo, getTodo, openModal }) => {
   return (
     <ul className="todo-list">
-      {Boolean(tasks.length) &&
+      {Boolean(tasks?.length) &&
         tasks.map(task => (
           <Todo
             key={task.id}

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useGetAllTodos } from 'hooks';
 import { Toaster } from 'react-hot-toast';
-import { Spinner } from 'components/Spinner';
+// import { Spinner } from 'components/Spinner';
 import { Container } from 'components/Container';
 import { TodoSection } from 'components/TodoSection';
 import { PageTitle } from 'components/PageTitle';
@@ -9,16 +9,17 @@ import { Option } from 'components/Option';
 import { IconButton } from 'components/IconButton';
 import { TodoList } from 'components/TodoList';
 import { Filter } from 'components/Filter';
-import { Pagination } from 'components/Pagination';
+// import { PaginatedItems } from 'components/Pagination';
+
 import { Modal } from 'components/Modal';
 import { TodoForm } from 'components/TodoForm';
 import { RiPlayListAddLine } from 'react-icons/ri';
 import { generate } from 'shortid';
+import { BasicPagination } from 'components/Pagination';
 
 const Dashboard = () => {
   const { todos } = useGetAllTodos();
   const [filteredTodos, setFilteredTodos] = useState([]);
-
   const [query, setQuery] = useState('');
   const [status, setStatus] = useState('all');
   const [PaginationPage, setPaginationPage] = useState(1);
@@ -173,7 +174,7 @@ const Dashboard = () => {
           <Option title="Search Todo filter">
             <Filter
               getFormValues={getFormValues}
-              resetPage={setPaginationPage}
+              // resetPage={setPaginationPage}
             />
           </Option>
         </TodoSection>
@@ -187,11 +188,9 @@ const Dashboard = () => {
                 updateTodo={handleUpdateTodo}
               />
               {filteredTodosByQuery.length >= PAGE_LIMIT && (
-                <Pagination
-                  page={PaginationPage}
+                <BasicPagination
+                  currentPage={PaginationPage}
                   totalPages={totalPages}
-                  onPervButtonClick={handlePrevButtonClick}
-                  onNextButtonClick={handleNextButtonClick}
                 />
               )}
             </>
