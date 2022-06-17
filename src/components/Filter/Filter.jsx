@@ -1,7 +1,8 @@
 import { Button } from '../Button';
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { IconButton } from 'components/IconButton';
 import { RiCloseFill } from 'react-icons/ri';
+import classNames from 'classnames';
 
 // import classNames from 'classnames';
 
@@ -25,11 +26,18 @@ const statusOptions = [
   },
 ];
 
-const Filter = ({ getFormValues }) => {
+const Filter = ({ getFormValues, resetPage }) => {
   const [inputValue, setInputValue] = useState('');
   const [checkedStatus, setCheckedStatus] = useState(DEFAULT_STATUS);
   const [disableSearch, setDisableSearch] = useState(false);
   const [disabledReset, setDisabledReset] = useState(true);
+  const inputRef = useRef();
+  const [isFocus, setIsFocus] = useState(false);
+
+  // const handleFocus = () => {
+  //   inputRef.current.focus();
+  //   console.log(inputRef.current);
+  // };
 
   const handleFilterChange = useCallback(({ target: { value } }) => {
     setInputValue(value);
@@ -75,12 +83,18 @@ const Filter = ({ getFormValues }) => {
     const formData = resetFormData();
     getFormValues(formData);
     setDisableSearch(false);
+    resetPage(1);
   }, []);
 
   return (
     <form className="filter" onSubmit={handleSubmit}>
       <div className="filter-options-wrapper">
-        <div className="filter-field-wrapper">
+        <div
+          className={classNames([
+            'filter-field-wrapper',
+            { 'filter-field-wrapper--onFocus': isFocus },
+          ])}
+        >
           <input
             className="filter-input"
             type="text"
@@ -88,6 +102,9 @@ const Filter = ({ getFormValues }) => {
             value={inputValue}
             onChange={handleFilterChange}
             placeholder="Search Todo"
+            ref={inputRef}
+            onFocus={() => setIsFocus(!isFocus)}
+            onBlur={() => setIsFocus(false)}
           />
           {inputValue && (
             <IconButton
@@ -95,6 +112,7 @@ const Filter = ({ getFormValues }) => {
               icon={<RiCloseFill />}
               tooltipText="Clear field"
               onClick={handleResetInput}
+              component="filter"
             />
           )}
         </div>

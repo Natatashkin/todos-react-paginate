@@ -14,11 +14,12 @@
     position: relative;
     display: inline-flex;
     align-items: center;
+    justify-content: space-between;
     width: 190px;
 
     margin-right: spaces(1);
     font-size: 12px;
-    border: 1px solid $darkGrey;
+    border: 2px solid $grey;
     border-radius: $radius;
     transition: border $time $cubic;
 
@@ -30,9 +31,9 @@
     //   }
     // }
 
-    // &--onFocus {
-    //   border: 1px solid $blue;
-    // }
+    &--onFocus {
+      border: 2px solid $blue;
+    }
   }
 
   &-title {

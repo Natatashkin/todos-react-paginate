@@ -119,6 +119,18 @@ const Dashboard = () => {
     setStatus(data.get('status'));
   }, []);
 
+  const printStatus = useMemo(() => {
+    console.log(status);
+    switch (status) {
+      case 'completed':
+        return 'completed';
+      case 'notCompleted':
+        return 'not completed';
+      default:
+        return;
+    }
+  }, [status]);
+
   //  ------ Start for Pagination ---------
 
   const totalPages = useMemo(
@@ -126,15 +138,12 @@ const Dashboard = () => {
     [filteredTodosByQuery.length, PAGE_LIMIT],
   );
 
-  const lastTodos = useMemo(
-    () => PaginationPage * PAGE_LIMIT,
-    [PaginationPage],
-  );
-  const firstTodos = useMemo(() => lastTodos - PAGE_LIMIT, [lastTodos]);
-  const currentTodos = useMemo(
-    () => filteredTodosByQuery.slice(firstTodos, lastTodos),
-    [lastTodos, firstTodos, filteredTodosByQuery],
-  );
+  const currentTodos = useMemo(() => {
+    const lastTodos = PaginationPage * PAGE_LIMIT;
+    const firstTodos = lastTodos - PAGE_LIMIT;
+    const current = filteredTodosByQuery.slice(firstTodos, lastTodos);
+    return current;
+  }, [PaginationPage, PAGE_LIMIT, filteredTodosByQuery]);
 
   const handlePrevButtonClick = useCallback(() => {
     if (PaginationPage === 1) {
@@ -150,9 +159,6 @@ const Dashboard = () => {
     setPaginationPage(prevPage => prevPage + 1);
   }, [PaginationPage, totalPages]);
 
-  console.log(filteredTodosByQuery);
-  console.log(currentTodos);
-
   return (
     <>
       <Container>
@@ -165,11 +171,14 @@ const Dashboard = () => {
             />
           </Option>
           <Option title="Search Todo filter">
-            <Filter getFormValues={getFormValues} />
+            <Filter
+              getFormValues={getFormValues}
+              resetPage={setPaginationPage}
+            />
           </Option>
         </TodoSection>
         <TodoSection title="Todo List">
-          {filteredTodosByQuery !== 0 ? (
+          {filteredTodosByQuery.length !== 0 ? (
             <>
               <TodoList
                 tasks={currentTodos}
@@ -187,7 +196,8 @@ const Dashboard = () => {
               )}
             </>
           ) : (
-            <Spinner />
+            <h4>{`You don't have ${printStatus} todos by query "${query}"`}</h4>
+            // <Spinner />
           )}
         </TodoSection>
       </Container>

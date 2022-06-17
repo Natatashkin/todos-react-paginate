@@ -13,7 +13,10 @@ const IconButton = ({
     <button
       className={classNames([
         'icon-button',
-        { 'icon-button--modal': component },
+        {
+          'icon-button--modal': component === 'modal',
+          'icon-button--filter': component === 'filter',
+        },
       ])}
       type={type}
       disabled={disabled}
