@@ -16,7 +16,7 @@ import { RiPlayListAddLine } from 'react-icons/ri';
 import { generate } from 'shortid';
 
 const Dashboard = () => {
-  const { todos, isLoading } = useGetAllTodos();
+  const { todos } = useGetAllTodos();
   const [filteredTodos, setFilteredTodos] = useState([]);
 
   const [query, setQuery] = useState('');
@@ -27,7 +27,7 @@ const Dashboard = () => {
   const PAGE_LIMIT = 10;
 
   useEffect(() => {
-    setFilteredTodos([...todos]);
+    setFilteredTodos(todos);
   }, [todos]);
 
   // ----- Start Sort Todos --------
@@ -44,7 +44,7 @@ const Dashboard = () => {
     };
   }, [filteredTodos]);
 
-  let filteredTodosByQuery = useMemo(() => {
+  const filteredTodosByQuery = useMemo(() => {
     const normalizedFilter = query.toLocaleLowerCase();
     const allSortetdTodos = [...notCompleted, ...competedTodos];
 
@@ -115,19 +115,20 @@ const Dashboard = () => {
 
   // ------ Start for Search Todos  -------
   const getFormValues = useCallback(data => {
-    setQuery(data.get('query'));
-    setStatus(data.get('status'));
+    console.log(data);
+    const { filter, status: statusComplite } = data;
+    setQuery(filter);
+    setStatus(statusComplite);
   }, []);
 
   const printStatus = useMemo(() => {
-    console.log(status);
     switch (status) {
       case 'completed':
         return 'completed';
       case 'notCompleted':
         return 'not completed';
       default:
-        return;
+        return '';
     }
   }, [status]);
 

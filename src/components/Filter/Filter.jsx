@@ -34,11 +34,6 @@ const Filter = ({ getFormValues, resetPage }) => {
   const inputRef = useRef();
   const [isFocus, setIsFocus] = useState(false);
 
-  // const handleFocus = () => {
-  //   inputRef.current.focus();
-  //   console.log(inputRef.current);
-  // };
-
   const handleFilterChange = useCallback(({ target: { value } }) => {
     setInputValue(value);
     setDisabledReset(!disabledReset);
@@ -49,29 +44,17 @@ const Filter = ({ getFormValues, resetPage }) => {
     setDisabledReset(!disabledReset);
   }, []);
 
-  const createFormData = useCallback(() => {
-    const formData = new FormData();
-    formData.set('query', inputValue);
-    formData.set('status', checkedStatus);
-    return formData;
-  }, [inputValue, checkedStatus]);
-
   const resetFormData = useCallback(() => {
-    const formData = new FormData();
-    formData.set('query', '');
-    formData.set('status', DEFAULT_STATUS);
-    return formData;
+    document.getElementById('form').reset();
   }, []);
 
-  const handleSubmit = useCallback(
-    e => {
-      e.preventDefault();
-      const formData = createFormData();
-      getFormValues(formData);
-      setDisableSearch(!disableSearch);
-    },
-    [inputValue, checkedStatus],
-  );
+  const handleSubmit = useCallback(e => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const formProps = Object.fromEntries(formData);
+    getFormValues(formProps);
+    setDisableSearch(!disableSearch);
+  }, []);
 
   const handleResetInput = useCallback(() => {
     setInputValue('');
@@ -79,15 +62,16 @@ const Filter = ({ getFormValues, resetPage }) => {
 
   const handleFormReset = useCallback(() => {
     setInputValue('');
-    setCheckedStatus('all');
-    const formData = resetFormData();
-    getFormValues(formData);
+    setCheckedStatus(DEFAULT_STATUS);
+    resetFormData();
+    getFormValues({ filter: '', status: DEFAULT_STATUS });
     setDisableSearch(false);
+    setDisabledReset(true);
     resetPage(1);
-  }, []);
+  }, [checkedStatus, inputValue]);
 
   return (
-    <form className="filter" onSubmit={handleSubmit}>
+    <form id="form" className="filter" onSubmit={handleSubmit}>
       <div className="filter-options-wrapper">
         <div
           className={classNames([
