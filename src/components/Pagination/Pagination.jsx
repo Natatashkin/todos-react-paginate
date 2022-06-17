@@ -1,5 +1,3 @@
-import { useEffect } from 'react';
-import { useState } from 'react';
 import { Button } from '../Button';
 
 const Pagination = ({
@@ -13,15 +11,15 @@ const Pagination = ({
       <Button
         type="button"
         title="Prev 10"
-        onClick={onPervButtonClick}
         disabled={page === 1}
+        onClick={onPervButtonClick}
       />
       <span className="pagination-page">{`${page} of ${totalPages}`}</span>
       <Button
         type="button"
         title="Next 10"
-        onClick={onNextButtonClick}
         disabled={page === totalPages}
+        onClick={onNextButtonClick}
       />
     </div>
   );
