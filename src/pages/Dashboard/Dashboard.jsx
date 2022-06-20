@@ -6,16 +6,14 @@ import { Container } from 'components/Container';
 import { TodoSection } from 'components/TodoSection';
 import { PageTitle } from 'components/PageTitle';
 import { Option } from 'components/Option';
+import { PageControls } from 'components/PageControls';
 import { IconButton } from 'components/IconButton';
 import { TodoList } from 'components/TodoList';
 import { Filter } from 'components/Filter';
-// import { PaginatedItems } from 'components/Pagination';
-
 import { Modal } from 'components/Modal';
 import { TodoForm } from 'components/TodoForm';
 import { RiPlayListAddLine } from 'react-icons/ri';
 import { generate } from 'shortid';
-import { BasicPagination } from 'components/Pagination';
 
 const Dashboard = () => {
   const { todos } = useGetAllTodos();
@@ -23,9 +21,10 @@ const Dashboard = () => {
   const [query, setQuery] = useState('');
   const [status, setStatus] = useState('all');
   const [PaginationPage, setPaginationPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
   const [openModal, setOpenModal] = useState(false);
   const [currentTodo, setCurrentTodo] = useState(null);
-  const PAGE_LIMIT = 10;
+  // const PAGE_LIMIT = 10;
 
   useEffect(() => {
     setFilteredTodos(todos);
@@ -134,31 +133,34 @@ const Dashboard = () => {
 
   //  ------ Start for Pagination ---------
 
-  const totalPages = useMemo(
-    () => Math.ceil(filteredTodosByQuery?.length / PAGE_LIMIT),
-    [filteredTodosByQuery.length, PAGE_LIMIT],
-  );
+  const getPageLimit = limit => {
+    if (!limit) {
+      setPerPage(filteredTodosByQuery.length);
+      return;
+    }
+    setPerPage(limit);
+  };
+
+  const totalPages = useMemo(() => {
+    if (!perPage) return;
+    const total = Math.ceil(filteredTodosByQuery?.length / perPage);
+    return total;
+  }, [filteredTodosByQuery.length, perPage]);
 
   const currentTodos = useMemo(() => {
-    const lastTodos = PaginationPage * PAGE_LIMIT;
-    const firstTodos = lastTodos - PAGE_LIMIT;
-    const current = filteredTodosByQuery.slice(firstTodos, lastTodos);
+    const lastTodo = PaginationPage * perPage;
+    const firstTodo = lastTodo - perPage;
+    const current = filteredTodosByQuery.slice(firstTodo, lastTodo);
+
+    if (!current.length && firstTodo !== 0) {
+      setPaginationPage(PaginationPage - 1);
+      return filteredTodosByQuery.slice(
+        firstTodo - perPage,
+        lastTodo - perPage,
+      );
+    }
     return current;
-  }, [PaginationPage, PAGE_LIMIT, filteredTodosByQuery]);
-
-  const handlePrevButtonClick = useCallback(() => {
-    if (PaginationPage === 1) {
-      return;
-    }
-    setPaginationPage(prevPage => prevPage - 1);
-  }, [PaginationPage]);
-
-  const handleNextButtonClick = useCallback(() => {
-    if (PaginationPage === totalPages) {
-      return;
-    }
-    setPaginationPage(prevPage => prevPage + 1);
-  }, [PaginationPage, totalPages]);
+  }, [PaginationPage, perPage, filteredTodosByQuery]);
 
   return (
     <>
@@ -174,7 +176,7 @@ const Dashboard = () => {
           <Option title="Search Todo filter">
             <Filter
               getFormValues={getFormValues}
-              // resetPage={setPaginationPage}
+              resetPage={setPaginationPage}
             />
           </Option>
         </TodoSection>
@@ -187,10 +189,13 @@ const Dashboard = () => {
                 openModal={toggleModal}
                 updateTodo={handleUpdateTodo}
               />
-              {filteredTodosByQuery.length >= PAGE_LIMIT && (
-                <BasicPagination
+              {filteredTodosByQuery.length && (
+                <PageControls
                   currentPage={PaginationPage}
                   totalPages={totalPages}
+                  onChange={(_, currentPage) => setPaginationPage(currentPage)}
+                  getPageLimit={getPageLimit}
+                  currentTodos={currentTodos}
                 />
               )}
             </>

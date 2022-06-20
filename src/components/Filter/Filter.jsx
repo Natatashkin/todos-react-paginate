@@ -50,6 +50,7 @@ const Filter = ({ getFormValues, resetPage }) => {
 
   const handleSubmit = useCallback(e => {
     e.preventDefault();
+    resetPage(1);
     const formData = new FormData(e.target);
     const formProps = Object.fromEntries(formData);
     getFormValues(formProps);
