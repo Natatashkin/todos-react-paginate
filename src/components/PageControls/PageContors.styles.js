@@ -1,9 +1,8 @@
 import makeStyles from '@mui/styles/makeStyles';
-import { grid } from '@mui/system';
 
 export const useStyles = makeStyles(theme => {
   const {
-    colors: { $grey, $darkGrey, $blue, $black },
+    colors: { $grey, $darkGrey, $blue, $black, $white },
     spaces,
   } = theme;
 
@@ -11,14 +10,14 @@ export const useStyles = makeStyles(theme => {
     container: {
       display: 'grid',
       gridTemplateColumns: '3fr 1fr',
-      alignItems: 'center',
+      width: '100%',
     },
 
     form: {
       display: 'flex',
       flexDirection: 'row',
-      justifyContent: 'flex-end',
-      width: '100%',
+      justifyContent: 'end',
+      width: '190px',
       margin: '0px',
     },
 
@@ -27,24 +26,47 @@ export const useStyles = makeStyles(theme => {
       paddingBottom: spaces(2),
       paddingLeft: spaces(2),
       border: `1px solid ${$darkGrey}`,
-      color: `${$black}`,
+      color: $black,
+    },
+
+    iconColor: {
+      fill: $darkGrey,
     },
 
     selectHelpertext: {
-      color: `${$darkGrey}`,
+      color: $darkGrey,
+    },
+
+    paginationContainer: {
+      width: '100%',
+    },
+
+    paginationList: {
+      width: '100%',
+      visibility: 'visibile',
+    },
+
+    paginationListHidden: {
+      visibility: 'hidden',
     },
 
     pageText: {
+      '& button': {
+        color: $black,
+      },
+
       '& .Mui-selected': {
-        backgroundColor: `${$blue}`,
+        backgroundColor: $blue,
+        color: $white,
       },
 
       '& .Mui-focusVisible': {
-        backgroundColor: `${$grey}`,
+        backgroundColor: $grey,
+        color: $black,
       },
 
       '& .Mui-disabled': {
-        color: `${$grey}`,
+        color: $darkGrey,
       },
     },
   };

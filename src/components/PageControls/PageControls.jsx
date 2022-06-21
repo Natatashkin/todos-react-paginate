@@ -6,6 +6,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormHelperText from '@mui/material/FormHelperText';
 import { useState } from 'react';
 import { useStyles } from './PageContors.styles';
+import classNames from 'classnames';
 
 const PageControls = ({
   currentPage,
@@ -23,23 +24,36 @@ const PageControls = ({
   };
   return (
     <Box className={styles.container}>
-      {totalPages !== 1 && (
-        <Pagination
-          page={currentTodos.length ? currentPage : currentPage - 1}
-          count={totalPages}
-          className={styles.pageText}
-          onChange={onChange}
-          showFirstButton
-          showLastButton
-          color="primary"
-        />
-      )}
+      <Pagination
+        page={currentTodos.length ? currentPage : currentPage - 1}
+        count={totalPages}
+        classes={{
+          root: styles.paginationContainer,
+          ul: styles.paginationList,
+          text: styles.pageText,
+        }}
+        className={classNames([
+          styles.paginationList,
+          { [styles.paginationListHidden]: totalPages === 1 },
+        ])}
+        onChange={onChange}
+        showFirstButton
+        showLastButton
+        color="primary"
+      />
       <FormControl classes={{ root: styles.form }}>
-        <FormHelperText classes={{ contained: styles.selectHelpertext }}>
+        <FormHelperText
+          classes={{
+            contained: styles.selectHelpertext,
+          }}
+        >
           Todos perpage
         </FormHelperText>
         <Select
-          classes={{ outlined: styles.selectContainer }}
+          classes={{
+            outlined: styles.selectContainer,
+            iconOutlined: styles.iconColor,
+          }}
           // className={styles.container}
           value={valuesPerPage}
           onChange={handleChange}

@@ -1,9 +1,11 @@
+import { useStyles } from './AppBar.styles';
 import { Container } from 'components/Container';
 import Navbar from '../NavBar';
 
 const AppBar = () => {
+  const styles = useStyles();
   return (
-    <header className="header">
+    <header className={styles.header}>
       <Container>
         <Navbar />
       </Container>

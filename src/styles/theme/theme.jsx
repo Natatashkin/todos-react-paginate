@@ -1,6 +1,16 @@
 const { createTheme } = require('@mui/material');
 
 export const theme = createTheme({
+  typography: {
+    h2: {
+      fontSize: '28px',
+      fontWeight: 700,
+    },
+    h3: {
+      fontSize: '20px',
+      fontWeight: 700,
+    },
+  },
   colors: {
     $grey: '#ebebeb',
     $darkGrey: '#808080',
@@ -19,9 +29,5 @@ export const theme = createTheme({
     buttonInnerShadow: '3px 3px 3px 0px rgba(0, 0, 0, 0.2) inset',
     time: '250ms',
     cubic: 'cubic-bezier(0.4, 0, 0.2, 1)',
-  },
-
-  media: {
-    tablet: '825px',
   },
 });

@@ -12,7 +12,7 @@ import { TodoList } from 'components/TodoList';
 import { Filter } from 'components/Filter';
 import { Modal } from 'components/Modal';
 import { TodoForm } from 'components/TodoForm';
-import { RiPlayListAddLine } from 'react-icons/ri';
+import AddIcon from '@mui/icons-material/Add';
 import { generate } from 'shortid';
 
 const Dashboard = () => {
@@ -24,7 +24,6 @@ const Dashboard = () => {
   const [perPage, setPerPage] = useState(10);
   const [openModal, setOpenModal] = useState(false);
   const [currentTodo, setCurrentTodo] = useState(null);
-  // const PAGE_LIMIT = 10;
 
   useEffect(() => {
     setFilteredTodos(todos);
@@ -168,10 +167,7 @@ const Dashboard = () => {
         <PageTitle title="Dashboard" />
         <TodoSection title="Control Panel">
           <Option title="Add Todo">
-            <IconButton
-              icon={<RiPlayListAddLine />}
-              onClick={() => toggleModal()}
-            />
+            <IconButton icon={<AddIcon />} onClick={() => toggleModal()} />
           </Option>
           <Option title="Search Todo filter">
             <Filter

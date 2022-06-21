@@ -55,6 +55,7 @@ const Filter = ({ getFormValues, resetPage }) => {
     const formProps = Object.fromEntries(formData);
     getFormValues(formProps);
     setDisableSearch(!disableSearch);
+    setDisabledReset(!disabledReset);
   }, []);
 
   const handleResetInput = useCallback(() => {
