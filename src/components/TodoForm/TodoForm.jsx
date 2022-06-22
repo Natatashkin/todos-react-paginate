@@ -1,10 +1,16 @@
 import { Button } from '../Button';
 import { useState, useCallback } from 'react';
+import { useStyles } from './TodoForm.styles';
+import DialogContent from '@mui/material/DialogContent';
+import TextField from '@mui/material/TextField';
+import DialogActions from '@mui/material/DialogActions';
+import TextareaAutosize from '@mui/base/TextareaAutosize';
 import toast from 'react-hot-toast';
 
 const TodoForm = ({ todo, onAddTodo, updateTodo, onClose }) => {
   const [taskText, setTaskText] = useState(todo?.title || '');
   const [disabledBtn, setDisabledBtn] = useState(false);
+  const styles = useStyles();
 
   const handleChange = useCallback(e => {
     const { value } = e.target;
@@ -43,34 +49,49 @@ const TodoForm = ({ todo, onAddTodo, updateTodo, onClose }) => {
     setTaskText('');
   };
 
-  const resizeTextarea = e => {
-    const textarea = e.target;
-    textarea.style.height = `${textarea.scrollHeight}px`;
-    return textarea.scrollHeight;
-  };
+  // const resizeTextarea = e => {
+  //   const textarea = e.target;
+  //   textarea.style.height = `${textarea.scrollHeight}px`;
+  //   return textarea.scrollHeight;
+  // };
 
   return (
-    <form className="form" onSubmit={handleSubmit}>
-      <label htmlFor="task" className="form-label">
-        Write your task:
-      </label>
-      <textarea
-        className="form-field"
-        autoFocus
-        name="task"
-        value={taskText}
-        onChange={handleChange}
-        onScroll={resizeTextarea}
-      ></textarea>
-
-      <div className="form-button">
-        <Button
-          title={todo?.title && 'Edit Task'}
-          type="submit"
-          disabled={disabledBtn}
+    <>
+      <DialogContent classes={{ root: styles.content }}>
+        <TextareaAutosize
+          className={styles.textArea}
+          fullWidth
+          autoFocus
+          value={taskText}
+          onChange={handleChange}
         />
-      </div>
-    </form>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose}>Cancel</Button>
+        <Button onClick={onClose}>Subscribe</Button>
+      </DialogActions>
+    </>
+    // <form className="form" onSubmit={handleSubmit}>
+    //   <label htmlFor="task" className="form-label">
+    //     Write your task:
+    //   </label>
+    //   <textarea
+    //     className="form-field"
+    //     autoFocus
+    //     name="task"
+    // value={taskText}
+    // onChange={handleChange}
+    //     onScroll={resizeTextarea}
+    //   ></textarea>
+
+    //   <div className="form-button">
+    //     <Button
+    //       title={todo?.title && 'Edit Task'}
+    //       type="submit"
+    //       disabled={disabledBtn}
+    //     />
+    //   </div>
+    // </form>
   );
 };
 

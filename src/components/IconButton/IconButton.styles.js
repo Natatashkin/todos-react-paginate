@@ -36,8 +36,8 @@ export const useStyles = makeStyles(theme => {
 
     iconPositionModal: {
       position: 'absolute',
-      top: '10px',
-      right: '10px',
+      top: spaces(2),
+      right: spaces(2),
       cursor: 'pointer',
     },
 

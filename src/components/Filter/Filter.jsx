@@ -99,7 +99,7 @@ const Filter = ({ getFormValues, resetPage }) => {
               icon={<RiCloseFill />}
               tooltipText="Clear field"
               onClick={handleResetInput}
-              component="filter"
+              parentComponent="filter"
             />
           )}
         </div>

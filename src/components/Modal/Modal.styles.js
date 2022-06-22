@@ -2,12 +2,24 @@ import makeStyles from '@mui/styles/makeStyles';
 
 export const useStyles = makeStyles(theme => {
   const {
+    colors: { $blue },
     spaces,
-    options: { time, cubic },
+    typography: {
+      h3: { fontSize, fontWeight, lineHeight },
+    },
   } = theme;
   return {
-    paperPaddings: {
-      padding: spaces(6),
+    paper: {
+      width: '90%',
+      padding: spaces(4),
+    },
+
+    dialogTitle: {
+      padding: '0',
+      fontSize,
+      color: $blue,
+      fontWeight,
+      lineHeight,
     },
   };
 });

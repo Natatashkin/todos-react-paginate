@@ -80,12 +80,6 @@ const Dashboard = () => {
     setOpenModal(prev => !prev);
   }, []);
 
-  const handleCloseModalClick = useCallback(e => {
-    if (e.target === e.currentTarget) {
-      setOpenModal(false);
-    }
-  }, []);
-
   // ---------- Start Update Todos --------------
   const handleAddTodo = useCallback(async value => {
     const newTask = {
@@ -204,12 +198,7 @@ const Dashboard = () => {
           )}
         </TodoSection>
       </Container>
-      <Modal
-        open={openModal}
-        onBackdropClose={handleCloseModalClick}
-        onClose={() => setOpenModal(false)}
-        onEscClose={() => setOpenModal(false)}
-      >
+      <Modal open={openModal} onClose={() => setOpenModal(false)}>
         <TodoForm
           todo={currentTodo}
           onAddTodo={handleAddTodo}

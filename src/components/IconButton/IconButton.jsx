@@ -9,7 +9,7 @@ const IconButton = ({
   onClick = () => {},
   disabled,
   tooltipText,
-  component = '',
+  parentCmponent = '',
   edge,
 }) => {
   const styles = useStyles();
@@ -21,8 +21,8 @@ const IconButton = ({
         className={classNames([
           styles.iconPosition,
           {
-            [styles.iconPositionModal]: component === 'modal',
-            [styles.iconPositionFilter]: component === 'filter',
+            [styles.iconPositionModal]: parentCmponent === 'modal',
+            [styles.iconPositionFilter]: parentCmponent === 'filter',
           },
         ])}
         type={type}
