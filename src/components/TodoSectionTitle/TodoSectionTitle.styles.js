@@ -1,8 +1,3 @@
-// .section-title {
-//   margin-bottom: spaces(4);
-//   text-align: left;
-// }
-
 import makeStyles from '@mui/styles/makeStyles';
 
 export const useStyles = makeStyles(theme => {

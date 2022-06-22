@@ -10,6 +10,11 @@ export const theme = createTheme({
       fontSize: '20px',
       fontWeight: 700,
     },
+    h4: {
+      fontSize: '16px',
+      fontWeight: 400,
+      lineHeight: 1,
+    },
   },
   colors: {
     $grey: '#ebebeb',

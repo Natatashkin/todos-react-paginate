@@ -1,16 +1,23 @@
-import { useState, useEffect, useCallback } from 'react';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import Checkbox from '@mui/material/Checkbox';
+import { TodoControls } from 'components/TodoControls';
+import { useStyles } from './Todo.styles';
+import { useState, useCallback } from 'react';
 import classNames from 'classnames';
-import { IconButton } from '../IconButton';
-import { RiDeleteBin6Line, RiEditLine } from 'react-icons/ri';
 
 const Todo = ({ task, onDeleteTodo, openModal, updateTodo }) => {
-  const { completed, title, id } = task;
+  const { completed, title } = task;
   const [completedStatus, setCompletedStatus] = useState(completed);
   const [disabledDelete, setDisabledDelete] = useState(false);
   const [disabledEdit, setDisabledEdit] = useState(completed);
 
+  const styles = useStyles();
+
   const handleChange = useCallback(
-    async e => {
+    e => {
       const { checked } = e.target;
       setCompletedStatus(checked);
       setDisabledEdit(checked);
@@ -25,42 +32,51 @@ const Todo = ({ task, onDeleteTodo, openModal, updateTodo }) => {
     onDeleteTodo(task);
   }, []);
 
+  const handleTodoClick = e => {
+    setCompletedStatus(!completedStatus);
+    setDisabledEdit(!completedStatus);
+    updateTodo({ ...task, completed: !completedStatus });
+  };
+
   return (
-    <>
-      <li className="todo">
-        <input
-          className="todo-checkbox"
-          type="checkbox"
-          onChange={handleChange}
-          checked={completedStatus}
-          name="checkbox"
+    <ListItem
+      className={styles.todoContainer}
+      disablePadding
+      secondaryAction={
+        <TodoControls
+          openModal={() => openModal(task)}
+          deleteTodo={handleDeletClick}
+          disabledEdit={disabledEdit}
+          disabledDelete={disabledDelete}
         />
-        <p
+      }
+    >
+      <ListItemButton
+        classes={{ root: styles.rightPadding }}
+        onClick={handleTodoClick}
+      >
+        <ListItemIcon>
+          <Checkbox
+            className={classNames([
+              [styles.checkbox],
+              { [styles.checkboxChecked]: completedStatus },
+            ])}
+            edge="start"
+            checked={completedStatus}
+            onChange={handleChange}
+            disableRipple
+          />
+        </ListItemIcon>
+        <ListItemText
           className={classNames([
-            'todo-task',
-            { 'todo-task--completed': completedStatus },
+            [styles.todoText],
+            { [styles.todoComplitedText]: completedStatus },
           ])}
         >
           {title}
-        </p>
-        <div className="todo-buttons">
-          <IconButton
-            icon={<RiEditLine />}
-            type="button"
-            onClick={() => openModal(task)}
-            disabled={disabledEdit}
-            tooltipText="Edit ToDo"
-          />
-          <IconButton
-            icon={<RiDeleteBin6Line />}
-            onClick={handleDeletClick}
-            type="button"
-            disabled={disabledDelete}
-            tooltipText="Delete ToDo"
-          />
-        </div>
-      </li>
-    </>
+        </ListItemText>
+      </ListItemButton>
+    </ListItem>
   );
 };
 

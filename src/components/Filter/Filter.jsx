@@ -3,8 +3,7 @@ import { useCallback, useRef, useState } from 'react';
 import { IconButton } from 'components/IconButton';
 import { RiCloseFill } from 'react-icons/ri';
 import classNames from 'classnames';
-
-// import classNames from 'classnames';
+import { useStyles } from './Filter.styles';
 
 const DEFAULT_STATUS = 'all';
 
@@ -33,6 +32,8 @@ const Filter = ({ getFormValues, resetPage }) => {
   const [disabledReset, setDisabledReset] = useState(true);
   const inputRef = useRef();
   const [isFocus, setIsFocus] = useState(false);
+
+  const styles = useStyles();
 
   const handleFilterChange = useCallback(({ target: { value } }) => {
     setInputValue(value);

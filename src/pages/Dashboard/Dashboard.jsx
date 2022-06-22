@@ -12,7 +12,7 @@ import { TodoList } from 'components/TodoList';
 import { Filter } from 'components/Filter';
 import { Modal } from 'components/Modal';
 import { TodoForm } from 'components/TodoForm';
-import AddIcon from '@mui/icons-material/Add';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { generate } from 'shortid';
 
 const Dashboard = () => {
@@ -167,9 +167,12 @@ const Dashboard = () => {
         <PageTitle title="Dashboard" />
         <TodoSection title="Control Panel">
           <Option title="Add Todo">
-            <IconButton icon={<AddIcon />} onClick={() => toggleModal()} />
+            <IconButton
+              icon={<AddCircleOutlineIcon />}
+              onClick={() => toggleModal()}
+            />
           </Option>
-          <Option title="Search Todo filter">
+          <Option title="Search Todo filter" child="filter">
             <Filter
               getFormValues={getFormValues}
               resetPage={setPaginationPage}

@@ -23,14 +23,6 @@
     border-radius: $radius;
     transition: border $time $cubic;
 
-    // &:hover {
-    //   border: 1px solid $blue;
-
-    //   & > .filter-title {
-    //     color: $blue;
-    //   }
-    // }
-
     &--onFocus {
       border: 2px solid $blue;
     }
@@ -42,16 +34,6 @@
     left: spaces(2);
     transform: translateY(-50%);
     transition: transition(color), transition(translate);
-
-    // &--onFocus {
-    //   transform: translate(spaces(-2), -220%);
-    //   color: $blue;
-    // }
-
-    // &--onClick {
-    //   transform: translate(spaces(-2), -220%);
-    //   color: $blue;
-    // }
   }
 
   &-input {

@@ -2,7 +2,7 @@ import makeStyles from '@mui/styles/makeStyles';
 
 export const useStyles = makeStyles(theme => {
   const {
-    colors: { $black, $orange, $white },
+    colors: { $black, $orange, $white, $darkGrey },
     options: { radius },
     spaces,
   } = theme;
@@ -11,6 +11,7 @@ export const useStyles = makeStyles(theme => {
       borderRadius: radius,
       padding: spaces(1),
       fontSize: '14px',
+
       '&:hover, &:focus': {
         backgroundColor: $orange,
       },
@@ -21,6 +22,10 @@ export const useStyles = makeStyles(theme => {
 
       '&:focus svg': {
         fill: $white,
+      },
+
+      '&:disabled svg': {
+        fill: $darkGrey,
       },
 
       '& svg': {
