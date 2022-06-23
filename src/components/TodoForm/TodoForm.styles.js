@@ -21,5 +21,9 @@ export const useStyles = makeStyles(theme => {
       fontSize: '16px',
       resize: 'none',
     },
+
+    formActions: {
+      padding: `${spaces(3)} ${spaces(0)} ${spaces(0)}`
+    }
   };
 });

@@ -44,31 +44,38 @@ const TodoForm = ({ todo, onAddTodo, updateTodo, onClose }) => {
     resetField('formTextarea')
   }
 
+
   useEffect(() => {
     setFocus('formTextarea');
   }, [setFocus]);
 
   useEffect(()=>{
-
-    if (!textField) {
-    setDisableCleardBtn(true)
+    if(textField === todo?.title) {
+      setDisableButtonTask(true);
       return;
     }
-    setDisableCleardBtn(false)
-  }, [textField]);
+     if (!textField) {
+    setDisableCleardBtn(true);
+    setDisableButtonTask(true);
+      return;
+    }
+    setDisableCleardBtn(false);
+    setDisableButtonTask(false);
+  }, [textField, todo?.title]);
+
 
   return (
     <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
           <Controller
         name="formTextarea"
         control={control}
-        render={({ field: { onChange, value, ref } }) => {
+        render={({ field: { onChange, onBlur, value, ref } }) => {
           return <TextareaAutosize ref={ref} className={styles.textArea}
         value={value}
-        onChange={onChange}/>
+        onChange={onChange} onBlur={()=>onBlur(setFocus('formTextarea'))}/>
         }}
       />
-      <DialogActions>
+      <DialogActions classes={{root: styles.formActions}}>
         <Button title="Clear" onClick={resetTextField} disabled={disableCleardBtn} />
         <Button title={todo?.title && 'Edit Task'} type="submit" disabled={disableButtonTask} />      
       </DialogActions>
