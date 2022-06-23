@@ -7,7 +7,7 @@ export const useStyles = makeStyles(theme => {
     options: { radius },
   } = theme;
   return {
-    content: {
+    form: {
       padding: `${spaces(3)} ${spaces(0)}`,
     },
     textArea: {

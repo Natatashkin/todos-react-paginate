@@ -1,97 +1,78 @@
 import { Button } from '../Button';
-import { useState, useCallback } from 'react';
+import { useState, useEffect,useRef, useCallback } from 'react';
 import { useStyles } from './TodoForm.styles';
-import DialogContent from '@mui/material/DialogContent';
-import TextField from '@mui/material/TextField';
+import {useForm, Controller} from 'react-hook-form';
 import DialogActions from '@mui/material/DialogActions';
 import TextareaAutosize from '@mui/base/TextareaAutosize';
 import toast from 'react-hot-toast';
 
 const TodoForm = ({ todo, onAddTodo, updateTodo, onClose }) => {
-  const [taskText, setTaskText] = useState(todo?.title || '');
-  const [disabledBtn, setDisabledBtn] = useState(false);
+  const {handleSubmit, control, watch, setFocus, resetField } = useForm({
+    defaultValues: {
+      formTextarea: todo?.title || '',
+    }
+  });
+  const textField = watch('formTextarea');
+  const [disableCleardBtn, setDisableCleardBtn] = useState(false);
+  const [disableButtonTask, setDisableButtonTask] = useState(false);
   const styles = useStyles();
 
-  const handleChange = useCallback(e => {
-    const { value } = e.target;
-    setTaskText(value);
-  }, []);
-
-  const handleSubmit = useCallback(
-    e => {
-      e.preventDefault();
-      // не принимаем пустое поле текста
-      if (!taskText) {
+  const onSubmit = useCallback(
+    data => {
+      if (!data.formTextarea) {
         toast.error('Задание не может быть пустым');
-        resetForm();
         return;
       }
 
       // если текст в поле изначально есть, редaктируем
       if (todo?.title) {
-        updateTodo({ ...todo, title: taskText });
-        resetForm();
-        setDisabledBtn(true);
+        updateTodo({ ...todo, title: data.formTextarea });
+        setDisableButtonTask(true); 
         onClose();
         return;
       }
 
       // если поле задачи изначально пустое, добавляем todo
-      onAddTodo(taskText.trim());
-      resetForm();
-      setDisabledBtn(true);
+      onAddTodo(data.formTextarea.trim());
+      setDisableButtonTask(true);
+      
       onClose();
     },
-    [taskText, todo],
+    [todo],
   );
+  const resetTextField = () => {
+    resetField('formTextarea')
+  }
 
-  const resetForm = () => {
-    setTaskText('');
-  };
+  useEffect(() => {
+    setFocus('formTextarea');
+  }, [setFocus]);
 
-  // const resizeTextarea = e => {
-  //   const textarea = e.target;
-  //   textarea.style.height = `${textarea.scrollHeight}px`;
-  //   return textarea.scrollHeight;
-  // };
+  useEffect(()=>{
+
+    if (!textField) {
+    setDisableCleardBtn(true)
+      return;
+    }
+    setDisableCleardBtn(false)
+  }, [textField]);
 
   return (
-    <>
-      <DialogContent classes={{ root: styles.content }}>
-        <TextareaAutosize
-          className={styles.textArea}
-          fullWidth
-          autoFocus
-          value={taskText}
-          onChange={handleChange}
-        />
-      </DialogContent>
+    <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
+          <Controller
+        name="formTextarea"
+        control={control}
+        render={({ field: { onChange, value, ref } }) => {
+          return <TextareaAutosize ref={ref} className={styles.textArea}
+        value={value}
+        onChange={onChange}/>
+        }}
+      />
       <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
-        <Button onClick={onClose}>Subscribe</Button>
+        <Button title="Clear" onClick={resetTextField} disabled={disableCleardBtn} />
+        <Button title={todo?.title && 'Edit Task'} type="submit" disabled={disableButtonTask} />      
       </DialogActions>
-    </>
-    // <form className="form" onSubmit={handleSubmit}>
-    //   <label htmlFor="task" className="form-label">
-    //     Write your task:
-    //   </label>
-    //   <textarea
-    //     className="form-field"
-    //     autoFocus
-    //     name="task"
-    // value={taskText}
-    // onChange={handleChange}
-    //     onScroll={resizeTextarea}
-    //   ></textarea>
-
-    //   <div className="form-button">
-    //     <Button
-    //       title={todo?.title && 'Edit Task'}
-    //       type="submit"
-    //       disabled={disabledBtn}
-    //     />
-    //   </div>
-    // </form>
+    </form>
   );
 };
 
