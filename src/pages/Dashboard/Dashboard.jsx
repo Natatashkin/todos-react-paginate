@@ -108,9 +108,10 @@ const Dashboard = () => {
 
   // ------ Start for Search Todos  -------
   const getFormValues = useCallback(data => {
-    const { filter, status: statusComplite } = data;
+    console.log(data);
+    const { filter, status: statusComplete } = data;
     setQuery(filter);
-    setStatus(statusComplite);
+    setStatus(statusComplete);
   }, []);
 
   const printStatus = useMemo(() => {
