@@ -40,7 +40,9 @@ const PerPageSelect = ({ getPageLimit }) => {
         displayEmpty
       >
         {selectOptions.map(({ value, text }) => (
-          <MenuItem value={value}>{text}</MenuItem>
+          <MenuItem key={text} value={value}>
+            {text}
+          </MenuItem>
         ))}
       </Select>
     </FormControl>
