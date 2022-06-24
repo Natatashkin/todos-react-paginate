@@ -16,9 +16,9 @@ import { useStyles } from './Filter.styles';
 const DEFAULT_STATUS = 'all';
 
 const DEFAULT_FILTER_VALUES = {
-  filter: '', 
-  status: DEFAULT_STATUS
-}
+  filter: '',
+  status: DEFAULT_STATUS,
+};
 
 const statusOptions = [
   {
@@ -40,22 +40,22 @@ const statusOptions = [
 
 const Filter = ({ getFormValues, resetPage }) => {
   const { handleSubmit, control, resetField, reset, watch } = useForm({
-    defaultValues: DEFAULT_FILTER_VALUES});
+    defaultValues: DEFAULT_FILTER_VALUES,
+  });
 
   const [disabledSearch, setDisabledSearch] = useState(false);
   const [disabledReset, setDisabledReset] = useState(true);
   const [disabledFilterReset, setDisabledFilterReset] = useState(true);
 
   const styles = useStyles();
-  const filterData = watch("filter")
+  const filterData = watch('filter');
 
   const onSubmit = useCallback(data => {
     resetPage(1);
     setDisabledSearch(true);
-    setDisabledReset(false)
+    setDisabledReset(false);
     getFormValues(data);
   }, []);
-
 
   const handleFormReset = useCallback(() => {
     reset();
@@ -65,14 +65,13 @@ const Filter = ({ getFormValues, resetPage }) => {
     resetPage(1);
   }, []);
 
-  useEffect(()=> {
-    if(!filterData.length) {
+  useEffect(() => {
+    if (!filterData.length) {
       setDisabledFilterReset(true);
       return;
     }
     setDisabledFilterReset(false);
-  }, [filterData])
-
+  }, [filterData]);
 
   return (
     <form id="form" className={styles.form} onSubmit={handleSubmit(onSubmit)}>
@@ -82,7 +81,7 @@ const Filter = ({ getFormValues, resetPage }) => {
           name="filter"
           render={({ field: { onChange, onBlur, value, ref } }) => (
             <TextField
-              classes={{root: styles.textFieldContainer}}
+              classes={{ root: styles.textFieldContainer }}
               label="Search query"
               variant="outlined"
               onChange={onChange}
@@ -90,17 +89,18 @@ const Filter = ({ getFormValues, resetPage }) => {
               value={value}
               inputRef={ref}
               InputProps={{
-                endAdornment: <InputAdornment position="end">
-                  <IconButton
-                    edge="end"
-                    icon={<CloseIcon />}
-                    onClick={()=>resetField('filter')}
-                    disabled={disabledFilterReset}
-                    parentCmponent='filter'
-                  />
-              </InputAdornment>
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      edge="end"
+                      icon={<CloseIcon />}
+                      onClick={() => resetField('filter')}
+                      disabled={disabledFilterReset}
+                      parentCmponent="filter"
+                    />
+                  </InputAdornment>
+                ),
               }}
-            
             />
           )}
         />
@@ -109,23 +109,30 @@ const Filter = ({ getFormValues, resetPage }) => {
           control={control}
           name="status"
           render={({ field: { onChange, onBlur, value, ref } }) => (
-            <FormControl >
-                <FormLabel >Todo Status</FormLabel>
-                <RadioGroup
-                  classes={{root: styles.radioGroup}}
-                  name="status"
-                  value={value}
-                  onChange={onChange}
-                  ref={ref}
-                >
-                  {statusOptions.map(({value, label})=><FormControlLabel key={value} value={value} control={<Radio />} label={label} />)}
-                </RadioGroup>
+            <FormControl>
+              <FormLabel>Todo Status</FormLabel>
+              <RadioGroup
+                classes={{ root: styles.radioGroup }}
+                name="status"
+                value={value}
+                onChange={onChange}
+                ref={ref}
+              >
+                {statusOptions.map(({ value, label }) => (
+                  <FormControlLabel
+                    key={value}
+                    value={value}
+                    control={<Radio />}
+                    label={label}
+                  />
+                ))}
+              </RadioGroup>
             </FormControl>
           )}
         />
       </Box>
-     
-      <div className={styles.buttonsContainer}>
+
+      <Box className={styles.buttonsContainer}>
         <Button
           type="button"
           title="Reset Form"
@@ -133,7 +140,7 @@ const Filter = ({ getFormValues, resetPage }) => {
           onClick={handleFormReset}
         />
         <Button type="submit" title="Search" disabled={disabledSearch} />
-      </div>
+      </Box>
     </form>
   );
 };

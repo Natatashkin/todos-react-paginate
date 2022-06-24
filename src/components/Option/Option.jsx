@@ -3,13 +3,13 @@ import { useStyles } from './Option.styles';
 import Typography from '@mui/material/Typography';
 import classNames from 'classnames';
 
-const Option = ({ title, child = '', children }) => {
+const Option = ({ title, variant='row', children }) => {
   const styles = useStyles();
   return (
-    <Box
+    <Box variant={variant}
       className={classNames([
         [styles.option],
-        { [styles.optionFilter]: child === 'filter' },
+        { [styles.optionFilter]: variant === 'column' },
       ])}
     >
       <Typography variant="h4" classes={{ h4: styles.optionTitle }}>

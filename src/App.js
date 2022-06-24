@@ -1,26 +1,38 @@
-import { lazy } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { AppRoutes } from 'components/AppRoutes';
+import { BrowserRouter } from 'react-router-dom';
+import {
+  createGenerateClassName,
+  jssPreset,
+  StylesProvider,
+  ThemeProvider,
+} from '@mui/styles';
+import jssIncreaseSpecificity from 'jss-increase-specificity';
+import GlobalStyles from '@mui/material/GlobalStyles';
+import { globalStyles } from 'styles/common/GlobalStyles';
+import { create } from 'jss';
+import { theme } from 'styles/theme/theme';
 
-function load(page) {
-  return lazy(() => import(`./pages/${page}`));
-}
+const jss = create({
+  plugins: [...jssPreset().plugins, jssIncreaseSpecificity()],
+});
 
-const Layout = load('Layout');
-const HomePage = load('HomePage');
-const Dashboard = load('Dashboard');
+const generateClassName = createGenerateClassName({
+  productionPrefix: 'ntshkn-',
+  disableGlobal: false,
+  seed: 'ntshkn',
+});
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<HomePage />} />
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="*" element={<Navigate to="/" />} />
-        </Route>
-      </Routes>
-    </div>
+    <BrowserRouter basename="/todo/">
+      <StylesProvider jss={jss} generateClassName={generateClassName}>
+        <ThemeProvider theme={theme}>
+          <GlobalStyles styles={globalStyles} />
+          <AppRoutes />
+        </ThemeProvider>
+      </StylesProvider>
+    </BrowserRouter>
   );
-}
+};
 
 export default App;

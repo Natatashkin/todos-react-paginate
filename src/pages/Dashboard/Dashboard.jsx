@@ -170,7 +170,7 @@ const Dashboard = () => {
               onClick={() => toggleModal()}
             />
           </Option>
-          <Option title="Search Todo filter" child="filter">
+          <Option title="Search Todo filter" variant="column">
             <Filter
               getFormValues={getFormValues}
               resetPage={setPaginationPage}
