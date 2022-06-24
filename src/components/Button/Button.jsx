@@ -12,7 +12,7 @@ const Button = ({
   return (
     <TodoTextButton
       classes={{ contained: styles.button }}
-      className={classNames([{ [styles.disabledButton]: disabled === true }])}
+      className={classNames([{ [styles.disabledButton]: disabled }])}
       variant="contained"
       type={type}
       onClick={onClick}

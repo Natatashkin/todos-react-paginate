@@ -3,7 +3,7 @@ import makeStyles from '@mui/styles/makeStyles';
 export const useStyles = makeStyles(theme => {
   const {
     colors: { $black, $orange, $white, $darkGrey },
-    options: { radius },
+    options: { radius, time, cubic },
     spaces,
   } = theme;
   return {
@@ -11,6 +11,7 @@ export const useStyles = makeStyles(theme => {
       borderRadius: radius,
       padding: spaces(1),
       fontSize: '14px',
+      transition: `fill ${time} ${cubic}, background-color ${time} ${cubic}`,
 
       '&:hover, &:focus': {
         backgroundColor: $orange,
@@ -42,9 +43,14 @@ export const useStyles = makeStyles(theme => {
     },
 
     iconPositionFilter: {
+      visibility: 'visibile',
       '& svg': {
         fontSize: '14px',
       },
+
+      '&:disabled': {
+        visibility: 'hidden'
+      }
     },
   };
 });

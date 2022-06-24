@@ -1,9 +1,11 @@
 import { Oval } from 'react-loader-spinner';
+import {useStyles} from './Spinner.styles';
 
 const Spinner = () => {
+  const styles = useStyles();
   return (
-    <div className="spinner">
-      <Oval color="#294b8a" height={40} width={40} />
+    <div className={styles.spinner}>
+      <Oval color="#294b8a" height={30} width={30} />
     </div>
   );
 };

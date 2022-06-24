@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useGetAllTodos } from 'hooks';
 import { Toaster } from 'react-hot-toast';
-// import { Spinner } from 'components/Spinner';
+import { Spinner } from 'components/Spinner';
 import { Container } from 'components/Container';
 import { TodoSection } from 'components/TodoSection';
 import { PageTitle } from 'components/PageTitle';
@@ -16,7 +16,7 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { generate } from 'shortid';
 
 const Dashboard = () => {
-  const { todos } = useGetAllTodos();
+  const { todos, isLoading } = useGetAllTodos();
   const [filteredTodos, setFilteredTodos] = useState([]);
   const [query, setQuery] = useState('');
   const [status, setStatus] = useState('all');
@@ -108,7 +108,6 @@ const Dashboard = () => {
 
   // ------ Start for Search Todos  -------
   const getFormValues = useCallback(data => {
-    console.log(data);
     const { filter, status: statusComplete } = data;
     setQuery(filter);
     setStatus(statusComplete);
@@ -145,16 +144,20 @@ const Dashboard = () => {
     const lastTodo = PaginationPage * perPage;
     const firstTodo = lastTodo - perPage;
     const current = filteredTodosByQuery.slice(firstTodo, lastTodo);
+    const offsetFirstTodo = firstTodo - perPage;
+    const offsetLastTodo = lastTodo - perPage;
 
     if (!current.length && firstTodo !== 0) {
       setPaginationPage(PaginationPage - 1);
       return filteredTodosByQuery.slice(
-        firstTodo - perPage,
-        lastTodo - perPage,
+        offsetFirstTodo,
+        offsetLastTodo
       );
     }
     return current;
   }, [PaginationPage, perPage, filteredTodosByQuery]);
+
+  const isEmptyFilteredTodosByQuery = filteredTodosByQuery.length === 0;
 
   return (
     <>
@@ -175,7 +178,11 @@ const Dashboard = () => {
           </Option>
         </TodoSection>
         <TodoSection title="Todo List">
-          {filteredTodosByQuery.length !== 0 ? (
+          {isLoading && <Spinner />}
+          {query && isEmptyFilteredTodosByQuery && (
+            <h4>{`You don't have ${printStatus} todos by query "${query}"`}</h4>
+          )}
+          {!isEmptyFilteredTodosByQuery && (
             <>
               <TodoList
                 tasks={currentTodos}
@@ -183,7 +190,7 @@ const Dashboard = () => {
                 openModal={toggleModal}
                 updateTodo={handleUpdateTodo}
               />
-              {filteredTodosByQuery.length && (
+              {Boolean(filteredTodosByQuery.length) && (
                 <PageControls
                   currentPage={PaginationPage}
                   totalPages={totalPages}
@@ -193,9 +200,6 @@ const Dashboard = () => {
                 />
               )}
             </>
-          ) : (
-            <h4>{`You don't have ${printStatus} todos by query "${query}"`}</h4>
-            // <Spinner />
           )}
         </TodoSection>
       </Container>

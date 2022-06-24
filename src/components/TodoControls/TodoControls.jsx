@@ -16,19 +16,17 @@ const TodoControls = ({
       <IconButton
         edge="end"
         icon={<EditIcon />}
-        type="button"
         onClick={openModal}
         disabled={disabledEdit}
-        tooltipText="Edit ToDo"
+        // tooltipText="Edit ToDo"
       />
       <IconButton
         edge="end"
         aria-label="delete todo"
         icon={<DeleteIcon />}
         onClick={deleteTodo}
-        type="button"
         disabled={disabledDelete}
-        tooltipText="Delete ToDo"
+        // tooltipText="Delete ToDo"
       />
     </Box>
   );

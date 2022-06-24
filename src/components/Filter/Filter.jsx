@@ -1,6 +1,7 @@
 import { Button } from '../Button';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { IconButton } from 'components/IconButton';
+import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
@@ -10,11 +11,14 @@ import FormLabel from '@mui/material/FormLabel';
 import InputAdornment from '@mui/material/InputAdornment';
 import CloseIcon from '@mui/icons-material/Close';
 import { useForm, Controller } from 'react-hook-form';
-import { RiCloseFill } from 'react-icons/ri';
-import classNames from 'classnames';
 import { useStyles } from './Filter.styles';
 
 const DEFAULT_STATUS = 'all';
+
+const DEFAULT_FILTER_VALUES = {
+  filter: '', 
+  status: DEFAULT_STATUS
+}
 
 const statusOptions = [
   {
@@ -35,169 +39,103 @@ const statusOptions = [
 ];
 
 const Filter = ({ getFormValues, resetPage }) => {
-  const { handleSubmit, control, resetField, watch } = useForm({
-    defaultValues: {
-        filter: '', 
-        status: DEFAULT_STATUS
-  }});
-  // const [inputValue, setInputValue] = useState('');
-  // const [checkedStatus, setCheckedStatus] = useState(DEFAULT_STATUS);
-  const [disableSearch, setDisableSearch] = useState(false);
+  const { handleSubmit, control, resetField, reset, watch } = useForm({
+    defaultValues: DEFAULT_FILTER_VALUES});
+
+  const [disabledSearch, setDisabledSearch] = useState(false);
   const [disabledReset, setDisabledReset] = useState(true);
-  // const inputRef = useRef();
-  // const [isFocus, setIsFocus] = useState(false);
+  const [disabledFilterReset, setDisabledFilterReset] = useState(true);
 
   const styles = useStyles();
-
-  console.log(watch('filter'));
-
-  // const handleFilterChange = useCallback(({ target: { value } }) => {
-  //   setInputValue(value);
-  //   setDisabledReset(!disabledReset);
-  // }, []);
-
-  // const handleStatusChange = useCallback(e => {
-  //   setCheckedStatus(e.target.value);
-  //   setDisabledReset(!disabledReset);
-  // }, []);
-
-  // const resetFormData = useCallback(() => {
-  //   document.getElementById('form').reset();
-  // }, []);
+  const filterData = watch("filter")
 
   const onSubmit = useCallback(data => {
-    // e.preventDefault();
-    console.log(data);
     resetPage(1);
-    // const formData = new FormData(e.target);
-    // const formProps = Object.fromEntries(formData);
+    setDisabledSearch(true);
+    setDisabledReset(false)
     getFormValues(data);
-    // setDisableSearch(!disableSearch);
-    // setDisabledReset(!disabledReset);
   }, []);
 
-  // const handleResetInput = useCallback(() => {
-  //   setInputValue('');
-  // }, []);
 
-  // const handleFormReset = useCallback(() => {
-  //   setInputValue('');
-  //   setCheckedStatus(DEFAULT_STATUS);
-  //   resetFormData();
-  //   getFormValues({ filter: '', status: DEFAULT_STATUS });
-  //   setDisableSearch(false);
-  //   setDisabledReset(true);
-  //   resetPage(1);
-  // }, [checkedStatus, inputValue]);
+  const handleFormReset = useCallback(() => {
+    reset();
+    setDisabledReset(true);
+    setDisabledSearch(false);
+    getFormValues(DEFAULT_FILTER_VALUES);
+    resetPage(1);
+  }, []);
 
-  const handleResetInput = () => resetField('filter')
+  useEffect(()=> {
+    if(!filterData.length) {
+      setDisabledFilterReset(true);
+      return;
+    }
+    setDisabledFilterReset(false);
+  }, [filterData])
+
 
   return (
-    <form id="form" className="filter" onSubmit={handleSubmit(onSubmit)}>
-      <Controller
-        control={control}
-        name="filter"
-        render={({ field: { onChange, onBlur, value, ref } }) => (
-          <TextField
-            label="Search query"
-            variant="outlined"
-            onChange={onChange}
-            onBlur={onBlur}
-            selected={value}
-            inputRef={ref}
-            InputProps={{
-              endAdornment: <InputAdornment position="end">
-                <IconButton
-                  // onClick={handleClickShowPassword}
-                  // onMouseDown={handleMouseDownPassword}
-                  edge="end"
-                  icon={<CloseIcon />}
-                  onClick={handleResetInput}
-                />
-            </InputAdornment>
-            }}
-           
-          />
-        )}
-      />
+    <form id="form" className={styles.form} onSubmit={handleSubmit(onSubmit)}>
+      <Box className={styles.formFields}>
+        <Controller
+          control={control}
+          name="filter"
+          render={({ field: { onChange, onBlur, value, ref } }) => (
+            <TextField
+              classes={{root: styles.textFieldContainer}}
+              label="Search query"
+              variant="outlined"
+              onChange={onChange}
+              onBlur={onBlur}
+              value={value}
+              inputRef={ref}
+              InputProps={{
+                endAdornment: <InputAdornment position="end">
+                  <IconButton
+                    edge="end"
+                    icon={<CloseIcon />}
+                    onClick={()=>resetField('filter')}
+                    disabled={disabledFilterReset}
+                    parentCmponent='filter'
+                  />
+              </InputAdornment>
+              }}
+            
+            />
+          )}
+        />
 
-      <Controller
-        control={control}
-        name="status"
-        render={({ field: { onChange, onBlur, value: radioValue, ref } }) => (
-          <FormControl>
-              <FormLabel >Todo Status</FormLabel>
-              <RadioGroup
-                name="status"
-                value={radioValue}
-                onChange={onChange}
-                ref={ref}
-              >
-                {statusOptions.map(({value, label})=><FormControlLabel key={value} value={value} control={<Radio />} label={label} />)}
-              </RadioGroup>
-          </FormControl>
-        )}
-      />
+        <Controller
+          control={control}
+          name="status"
+          render={({ field: { onChange, onBlur, value, ref } }) => (
+            <FormControl >
+                <FormLabel >Todo Status</FormLabel>
+                <RadioGroup
+                  classes={{root: styles.radioGroup}}
+                  name="status"
+                  value={value}
+                  onChange={onChange}
+                  ref={ref}
+                >
+                  {statusOptions.map(({value, label})=><FormControlLabel key={value} value={value} control={<Radio />} label={label} />)}
+                </RadioGroup>
+            </FormControl>
+          )}
+        />
+      </Box>
      
-      <div className="filter-buttons">
+      <div className={styles.buttonsContainer}>
         <Button
           type="button"
           title="Reset Form"
           disabled={disabledReset}
-          // onClick={handleFormReset}
+          onClick={handleFormReset}
         />
-        <Button type="submit" title="Search" disabled={disableSearch} />
+        <Button type="submit" title="Search" disabled={disabledSearch} />
       </div>
     </form>
   );
 };
 
 export default Filter;
-
-
-/* <div
-          className={classNames([
-            'filter-field-wrapper',
-            { 'filter-field-wrapper--onFocus': isFocus },
-          ])}
-        >
-          <input
-            className="filter-input"
-            type="text"
-            name="filter"
-            value={inputValue}
-            onChange={handleFilterChange}
-            placeholder="Search Todo"
-            ref={inputRef}
-            onFocus={() => setIsFocus(!isFocus)}
-            onBlur={() => setIsFocus(false)}
-          />
-          {inputValue && (
-            <IconButton
-              type="button"
-              icon={<RiCloseFill />}
-              tooltipText="Clear field"
-              onClick={handleResetInput}
-              parentComponent="filter"
-            />
-          )}
-        </div> */
-
-
-        // <div className="filter-options-wrapper">
-      //   <ul className="status-list">
-      //     {statusOptions.map(({ id, value, label }) => (
-      //       <li key={id}>
-      //         <input
-      //           type="radio"
-      //           name="status"
-      //           id={id}
-      //           value={value}
-      //           checked={checkedStatus === value}
-      //           onChange={handleStatusChange}
-      //         />
-      //         <label htmlFor="all">{label}</label>
-      //       </li>
-      //     ))}
-      //   </ul>
-      // </div>

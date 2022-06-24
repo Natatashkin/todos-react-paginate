@@ -1,5 +1,5 @@
 import { Button } from '../Button';
-import { useState, useEffect,useRef, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useStyles } from './TodoForm.styles';
 import {useForm, Controller} from 'react-hook-form';
 import DialogActions from '@mui/material/DialogActions';
@@ -19,21 +19,22 @@ const TodoForm = ({ todo, onAddTodo, updateTodo, onClose }) => {
 
   const onSubmit = useCallback(
     data => {
-      if (!data.formTextarea) {
+      const formTextAreaValue = data.formTextarea;
+      if (!formTextAreaValue) {
         toast.error('Задание не может быть пустым');
         return;
       }
 
       // если текст в поле изначально есть, редaктируем
       if (todo?.title) {
-        updateTodo({ ...todo, title: data.formTextarea });
+        updateTodo({ ...todo, title: formTextAreaValue });
         setDisableButtonTask(true); 
         onClose();
         return;
       }
 
       // если поле задачи изначально пустое, добавляем todo
-      onAddTodo(data.formTextarea.trim());
+      onAddTodo(formTextAreaValue.trim());
       setDisableButtonTask(true);
       
       onClose();
@@ -47,7 +48,7 @@ const TodoForm = ({ todo, onAddTodo, updateTodo, onClose }) => {
 
   useEffect(() => {
     setFocus('formTextarea');
-  }, [setFocus]);
+  }, []);
 
   useEffect(()=>{
     if(textField === todo?.title) {
@@ -61,23 +62,25 @@ const TodoForm = ({ todo, onAddTodo, updateTodo, onClose }) => {
     }
     setDisableCleardBtn(false);
     setDisableButtonTask(false);
-  }, [textField, todo?.title]);
+  }, [textField, todo]);
 
+
+  const submitButtonTitle = todo?.title && 'Edit Task';
 
   return (
     <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
           <Controller
         name="formTextarea"
         control={control}
-        render={({ field: { onChange, onBlur, value, ref } }) => {
+        render={({ field: { onChange, value, ref } }) => {
           return <TextareaAutosize ref={ref} className={styles.textArea}
         value={value}
-        onChange={onChange} onBlur={()=>onBlur(setFocus('formTextarea'))}/>
+        onChange={onChange} onBlur={()=> setFocus('formTextarea')}/>
         }}
       />
       <DialogActions classes={{root: styles.formActions}}>
         <Button title="Clear" onClick={resetTextField} disabled={disableCleardBtn} />
-        <Button title={todo?.title && 'Edit Task'} type="submit" disabled={disableButtonTask} />      
+        <Button title={submitButtonTitle} type="submit" disabled={disableButtonTask} />      
       </DialogActions>
     </form>
   );

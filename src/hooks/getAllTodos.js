@@ -3,13 +3,14 @@ import * as todosAPI from 'services/todosAPI';
 
 const useGetAllTodos = () => {
   const [todos, setTodos] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const getAllTodos = useCallback(async () => {
     try {
+      setIsLoading(true);
       const res = await todosAPI.getTodos();
-      setTodos(res);
       setIsLoading(false);
+      setTodos(res);
     } catch (err) {
       setIsLoading(false);
       console.log(err.message);

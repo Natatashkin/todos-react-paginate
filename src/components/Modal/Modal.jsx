@@ -20,7 +20,7 @@ const Modal = ({ children, open, onClose, onBackdropClose, onEscClose }) => {
                 aria-label="close"
                 onClick={onClose}
                 parentCmponent="modal"
-              ></IconButton>
+              />
             )}
           </DialogTitle>
           {children}

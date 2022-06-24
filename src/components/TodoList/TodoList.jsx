@@ -6,7 +6,7 @@ const TodoList = ({ tasks, updateTodo, onDeleteTodo, getTodo, openModal }) => {
   const styles = useStyles();
   return (
     <List classes={{ root: styles.todoList }} disablePadding={true}>
-      {Boolean(tasks?.length) &&
+      {Boolean(tasks.length) &&
         tasks.map(task => (
           <Todo
             key={task.id}
